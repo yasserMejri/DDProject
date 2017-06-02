@@ -1,0 +1,122 @@
+<br/>
+
+<label> {{ name|title }} </label> <br/>
+
+<div class="data">
+<table> 
+	<thead>
+		<tr id="data-headers" > </tr>
+	</thead>
+	<tbody id="data-content">
+	</tbody>
+</table>
+</div>
+
+<input type="hidden" name="{{name}}" id="data-submit" value="" />
+
+<script language="javascript">
+	$(document).ready(function() {
+		var data = JSON.parse('{{js_string}}');
+
+		$("#data-submit").val(JSON.stringify(data)); 
+		console.log(data);
+		console.log($("#field-submit").val());
+
+		function refresh_data_table() {
+
+			$("#data-headers").html('');
+			$("#data-content").html('');
+
+			var fields = JSON.parse($("#field-submit").val()); 
+
+			for(idx in fields) {
+				field = fields[idx]
+				var elem = '<th class="'+field['name']+'">'+capitalizeFirstLetter(field['name']) + '</th>';
+				$("#data-headers").append(elem);
+			}
+			$("#data-headers").append('<th> - </th>')
+
+			for(idx in data) {
+				item = data[idx];
+				var elem = '<tr>';
+				for(fid in fields) {
+					elem = elem + '<td>'; 
+					field = fields[fid]
+					if(field['type'] == 'select') {
+						elem = elem + '<select row="'+idx+'" column = "'+field['v_name']+'" class="value-data select" >'
+						values = [];
+						if(field['value'] != undefined) {
+							values = field['value'].split(',');
+						} else {
+							values = []
+						}
+						for(val in values) {
+							selected = '';
+							if(values[val] == item[field['v_name']])
+								selected = 'selected';
+							elem = elem + '<option value="'+values[val]+'" '+selected+'>'+capitalizeFirstLetter(values[val])+'</option>';
+						}
+						elem = elem + '</select>';
+					} else {
+						checked = ''
+						val = item[field['v_name']]
+						if(field['type'] == 'checkbox') {
+							if(item[field['v_name']] == true) {
+								checked = 'checked'
+								val = true;
+							} else {
+								val = false;
+							}
+						}
+						elem = elem + '<input type="'+field['type']+'" row="'+idx+'" column = "'+field['v_name']+'" value="'+val+'" class="value-data '+field['type']+'" id="'+idx+fid+'" '+checked+' />';
+						if(field['type'] == 'checkbox') 
+							elem = elem + '<label for="'+idx+fid+'"> -</label>';
+						
+					}
+					elem = elem +'</td>';
+				}
+				elem = elem + '<td> <span row="'+idx+'" class="btn btn-floating btn-small waves-effect waves-light red darken-4 z-depth-1 remove-row-data"> <i class="material-icons">delete</i> </span> </td>';
+				elem = elem + '</tr>';
+				$("#data-content").append(elem);
+			}
+			var button = '<tr> <td> <span class="btn btn-default waves-effect waves-light z-depth-2" id="add-data"> <i class="material-icons"> add </i> </span> </td> </tr>';
+			$("#data-content").append(button);
+
+			$("select.select").material_select();
+
+			// Action attachement
+			$(".value-data").change(function() {
+				var row = $(this).attr('row');
+				var col = $(this).attr('column');
+				data[row][col] = $(this).val();
+				if($(this).hasClass('checkbox'))
+					data[row][col] = !eval(data[row][col]);
+				refresh_data_table();
+			}); 
+			$(".remove-row-data").click(function() {
+				var row = $(this).attr('row');
+				data.splice(row, 1);
+				refresh_data_table();
+			}); 
+			$("#add-data").click(function() {
+				var item = {};
+				for(fid in fields) {
+					field = fields[fid];
+					item[field['v_name']] = '';
+				}
+				data.push(item);
+				refresh_data_table();
+			}); 
+
+			$("#data-submit").val(JSON.stringify(data)); 
+		}
+
+		refresh_data_table();
+
+		$("#field-submit").change(function() {
+			refresh_data_table();
+		}); 
+
+	}); 
+</script>
+

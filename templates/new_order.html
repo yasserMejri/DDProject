@@ -1,0 +1,96 @@
+{% extends 'main.html' %}
+{% load static %}
+
+{% block content %}
+	<h3 class="col-sm-offset-1"> Order Form </h3>
+	<ul class="nav nav-tabs col-sm-offset-1 col-sm-10">
+		<li class="active"> <a data-toggle="tab" href="#filing"> Filing </a> </li>
+		<li> <a data-toggle="tab" href="#searches"> Searches </a> </li>
+		<li> <a data-toggle="tab" href="#delivery"> Delivery </a> </li>
+	</ul>
+
+	<div class="portal order-form">
+		<div class="col-sm-4 col-sm-offset-1">
+			<div class="sender-info col-sm-12">
+				<h4> Sender </h4>
+				<select id="service" class="col-sm-12 col-xs-12" > 
+					<option> Service </option>
+					<option> Land Forms </option>
+					<option> Court </option>
+				</select>
+				<input type="text" id="sender-address" placeholder="Address" class="col-sm-8 col-xs-12" />
+				<input type="text" id="sender-postcode" placeholder="Postcode" class="col-sm-4 col-xs-12" />
+				<input type="email" id="sender-email" placeholder="email" class="col-sm-4 col-xs-12" >
+				<input type="text" id="sender-phone" placeholder="Phone" class="col-sm-4 col-xs-12">
+				<input type="text" id="sender-fax" placeholder="Fax" class="col-sm-4 col-xs-12">
+			</div>
+
+			<div class="receiver-info col-sm-12">
+				<h4> Receiver </h4>
+				<input type="text" id="receiver-name" placeholder="Name" class="col-sm-12 col-xs-12">
+				<input type="text" id="sender-address" placeholder="Address" class="col-sm-8 col-xs-12" />
+				<input type="text" id="sender-postcode" placeholder="Postcode" class="col-sm-4 col-xs-12" />
+				<input type="email" id="sender-email" placeholder="email" class="col-sm-4 col-xs-12" >
+				<input type="text" id="sender-phone" placeholder="Phone" class="col-sm-4 col-xs-12">
+				<input type="text" id="sender-fax" placeholder="Fax" class="col-sm-4 col-xs-12">
+			</div>
+		</div>
+
+		<div class="service col-sm-5 col-sm-offset-1">
+			<h4> Service Detail </h4>
+			<div>
+				<span class="text-warning text"> Please Select Service on top of form </span>
+			</div>
+		</div>
+
+		<div class="clearfix"> </div>
+		<hr class="col-sm-offset-1 col-sm-10" />
+
+		<div class="documents col-sm-10 col-sm-offset-1">
+			<h4> Documents Information </h4>
+			<h5> All Documents </h5>
+			<table class="table table-stripped">
+				<thead>
+					<tr>
+						<th class="col-sm-1"> No </th>
+						<th class="col-sm-8"> Document </th>
+						<th class="col-sm-1"> Quantity </th>
+						<th class="col-sm-1"> Unit Price </th>
+						<th class="col-sm-1"> Total </th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td > <input type="text" value="A324B" /> </td>
+						<td > <input type="text" value="Document1" /> </td>
+						<td > <input type="number" value+"5" /> </td> 
+						<td > <input type="number" value="12.5" /> </td>
+						<td > <input type="number" value+"62.5" /> </td>
+					</tr>
+						<td colspan="3"> </td>
+						<td colspan="2"> <button id="add_document" class="btn btn-primary" > Add Document </button> </td>
+					<tr>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+
+		<div class="order-form-footer col-sm-10 col-sm-offset-1">
+			<label>
+				<input type="checkbox" id="agree-policy" class=""/>
+				<span> &nbsp;&nbsp; By clicking this checkbox you agree to our <a href="/"> End User Addreement </a> </span>
+			</label>
+			<button class="pull-right btn btn-default" > Submit order </button>
+		</div>
+
+	</div>
+
+	<div id="order-complete">
+
+	</div>
+
+{% endblock %}
+
+{% block custom_script %}
+	<script language="javascript" src="{% static '/js/new_order.js' %}" > </script>
+{% endblock %}

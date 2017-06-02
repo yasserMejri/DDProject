@@ -1,0 +1,69 @@
+{% load bootstrap3 %}
+{% load bootstrap_themes %}
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title> {% block title %} Denning Delivery {% endblock %} </title>
+	<script src = "https://code.jquery.com/jquery-1.12.2.min.js"> </script>
+
+	{# Load CSS and JavaScript #}
+	{% bootstrap_css %}
+	{% bootstrap_javascript %}
+
+	{# Display django.contrib.messages as Bootstrap alerts #}
+	{% bootstrap_messages %}
+
+	{% bootstrap_styles theme='default' type='min.css' %}
+	{% bootstrap_styles theme='cosmo' type='css' %}
+	{% bootstrap_styles theme='united' type='less' %}
+
+    <link href="{% static '/css/style.css' %}" rel="stylesheet" />
+    {% block header_addition %} {% endblock %}
+
+</head>
+
+<body>
+	<div class="header">
+		<div class="opaq-background"> </div>
+		<label class="Logo" > <a href="{% url 'home' %}"> DENNING DELIVERY </a> </label>
+		<span class="user_menu pull-right">
+			{% if user.id %}
+				<a href="{% url 'new_order' %}" > <span> New Order </span> </a>
+				<label> <span class="glyphicon glyphicon-user"> </span> {{ user.username }} </label>
+				&nbsp;&nbsp;&nbsp;
+				<label> <a href="{% url 'logout' %}"> <span class="glyphicon glyphicon-log-out"> </span> Logout </a> </label>
+			{% else %}
+				<label> <a href="{% url 'register' %}"> <span class="glyphicon glyphicon-user"> </span> Signup </a> </label>
+				&nbsp;&nbsp;&nbsp;
+				<label> <a href="{% url 'login' %}"> <span class="glyphicon glyphicon-log-in"> </span> Login </a> </label>
+			{% endif %}
+		</span>
+		<div class="modal-background"> </div>
+	</div>
+
+	<h1> &nbsp; </h1>
+
+	<div class="content">
+		{% block content %}
+			<label style='font-size: 400px;'> DD </label>
+		{% endblock %}
+	</div>
+
+	<div class="clearfix"> </div>
+
+	<div class="footer">
+		<span> <a href="#contact_us"> Contact Us </a> </span>
+		{% block footer %}
+		{% endblock %}
+	</div>
+
+	<div class="clearfix"> </div>
+
+	{% block custom_script %} {% endblock %}
+
+</body>
+
+</html>
