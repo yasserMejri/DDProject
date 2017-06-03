@@ -31,6 +31,7 @@ class CheckList(models.Model):
 	quantity = models.IntegerField()
 	service = models.ForeignKey('SubService')
 	unit_price = models.IntegerField()
+	fee = models.IntegerField(default=0)
 
 	def __str__(self):
 		return self.name

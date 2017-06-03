@@ -3,7 +3,7 @@
 {% block content %}
 
 	<div class="col-sm-6 col-sm-offset-3 register-form">
-		<form class="form" method="post">
+		<form class="form" method="post" id="register-form">
 			{% csrf_token %}
 			<h3> Register </h3>
 			<h5> credentials </h5>
@@ -11,32 +11,61 @@
 				<input class="form-control" type="email" name="email" placeholder="Email *" required />
 			</div>
 			<div class="form-group">
-				<input class="form-control" type="password" name="password" placeholder="Password *" required />
-				<input class="form-control" type="password" name="password2" placeholder="Password Confirm *" required />
+				<input class="form-control" type="password" id="password" name="password" placeholder="Password *" required minlength="7" />
+				<input class="form-control" type="password" id="password2" name="password2" placeholder="Password Confirm *" required />
 			</div>
 			<h5> Contact Information </h5>
-			<div class="form-group">
-				<input class="form-control" type="text" name="fullname" placeholder="FullName" >
+			<div class="address-pane">
+				<div class="form-group col-sm-6">
+					<input class="form-control" type="text" name="firstname" placeholder="FirstName" >
+				</div>
+				<div class="form-group col-sm-6">
+					<input class="form-control" type="text" name="lastname" placeholder="LastName" >
+				</div>
 			</div>
 			<div class="form-group">
 				<input class="form-control" type="text" name="phone" placeholder="Phone Number *" required />
 			</div>
+			<div class="form-group">
+				<input class="form-control" type="text" name="fax" placeholder="Fax " />
+			</div>
+			<div class="form-group">
+				<input class="form-control" type="text" name="company" placeholder="Company " />
+			</div>
 			<div class="address-pane">
-				<div class="col-sm-7 form-group">
+				<div class="col-sm-8 form-group">
 					<input class="form-control" type="text" name="address" placeholder="Address *" required />
 				</div>
-				<div class="col-sm-2 form-group">
+				<div class="col-sm-4 form-group">
 					<input class="form-control" type="text" name="postcode" placeholder="Postcode *" required />
 				</div>
-				<div class="col-sm-3 form-group">
-					<select class="form-control" type="text" name="country" >
-						<option> country * </option>
-					</select>
-				</div>
+			</div>
+			<div class="form-group">
+				<select class="form-control" type="text" name="country" >
+					<option> country * </option>
+					{% for code, value in countries.items %}
+						<option value="{{code}}"> {{value}} </option>
+					{% endfor %}
+				</select>
 			</div>
 			<label class="text text-danger"> {{ error }} </label>
-			<input class="btn btn-default pull-right" type="submit" name="register" value="Register" />
+			<button class="btn btn-default col-sm-3 col-sm-offset-8" type="submit" name="register">
+				<span class="glyphicon glyphicon-user"> </span> Register
+			</button>
 		</form>
 	</div>
 
+{% endblock %}
+
+{% block custom_script %} 
+	<script language="javascript">
+		$(document).ready(function() {
+			$("#register-form").submit(function() {
+				if($("#password").val() != $("#password2").val()) {
+					$("#password2").focus();
+					return false;
+				}
+			}); 
+		}); 
+	</script>
 {% endblock %}

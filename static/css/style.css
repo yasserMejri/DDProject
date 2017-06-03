@@ -6,6 +6,19 @@ td {
 	width: inherit;
 }
 
+select {
+	height: 27px;
+}
+
+td > input,
+td > select {
+	width: 100%;
+}
+
+.full-width {
+	width: 100%;
+}
+
 .header {
 	height: 45px;
 	box-shadow: 0px 4px 10px 0px #ccc;
@@ -51,9 +64,26 @@ td {
 	right: 20px;
 }
 
-td > input {
-	border: none;
-	width: 100%;
+.documents table {
+	table-layout:fixed;
+}
+
+.documents table:focus {
+	box-shadow: 0 0 3px 2px #667;
+}
+
+.documents td {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.documents td.add_document {
+	overflow: visible;
+}
+
+.documents td > input {
+	/*border: none;*/
 }
 
 .login-form > h3{
@@ -74,4 +104,9 @@ td > input {
 	text-align: center;
 	padding-bottom: 120px;
 	box-shadow: 0px -7px 10px 0px #ccc;
+}
+
+img.qr-code {
+	box-shadow: 0 0 5px 7px #999;
+    padding: 5px;
 }

@@ -1,0 +1,116 @@
+{% extends 'main.html' %}
+
+{% load static %}
+
+{% load extra %}
+
+{% block content %}
+	<div class="col-sm-9 col-sm-offset-2">
+	<h2> Order #{{order.id}} by {{ order.user.first_name }} {{ order.user.last_name }} </h2>
+		<div class="col-sm-9">
+			<div class="col-sm-offset-1 col-sm-5">
+				<h4> Sending Part </h4>
+				<label> Name: </label> <span> {{ order.user.first_name }} {{ order.user.last_name }} </span> <br/>
+				<label> Address: </label> <span> {{ data.sender.address }} </span> <br/>
+				<label> Postcode: </label> <span> {{ data.sender.postcode }} </span> <br/>
+				<label> Country </label> <span> {{ countries|get_item:data.sender.country }} </span> <br/>
+			</div>
+			<div class="col-sm-offset-1 col-sm-4">
+				<h4> Receiving Part </h4>
+				<label> Name: </label> <span> {{ data.receiver.name }} </span> <br/>
+				<label> Address: </label> <span> {{ data.receiver.address }} </span> <br/>
+				<label> Postcode: </label> <span> {{ data.receiver.postcode }} </span> <br/>
+				<label> Country </label> <span> {{ countries|get_item:data.receiver.country }} </span> <br/>
+			</div>
+
+			{% if data.service.service %}
+				<div class="col-sm-10 col-sm-offset-1">
+					<h3> Service Detail </h3>
+					<br/>
+					<div class="col-sm-6">
+						<label> Service </label> <span> {{ data.service.super.name }} </span> <br/>
+						<label> Category </label> <span> {{ data.service.service.name }} </span> <br/>
+						<label> Action </label> <span> {{ data.service.subservice.name }} </span>
+					</div>
+					<div class="col-sm-4 col-sm-offset-1">
+						<h5> {{ data.service.service.itemName }} </h5>
+						{% with data.service.service|get_item:data.service.service.itemName as items %}
+							{% for item, value in items.items %}
+								<label> {{ value.name }} </label> <span> {{ value.value }} </span> <br/>
+							{% endfor %}
+						{% endwith %}
+					</div>
+				</div>
+			{% endif %}
+		</div>
+		<img src="{% static order.qrcode.url%}" class="col-sm-3 qr-code" />
+
+		<div class="col-sm-12">
+			<h3> Documents </h3>
+			<h6> All documents </h6>
+			<table class="table table-stripped">
+				<thead>
+					<tr id="documents_header">
+						<th class="col-sm-1"> No </th>
+						<th class="col-sm-8"> Document </th>
+						<th class="col-sm-1"> Quantity </th>
+						<th class="col-sm-1"> Unit Price </th>
+						<th class="col-sm-1"> Total </th>
+						<th class="col-sm-1"> Fee </th>
+					</tr>
+				</thead>
+				<tbody id="documents_body">
+					{% for doc in data.documents %}
+						<tr>
+							<td > {{ doc.no }} </td>
+							<td > {{ doc.name }} </td>
+							<td > {{ doc.quantity }} </td> 
+							<td > {{ doc.unit_price }} </td>
+							<td > {{ doc.total }} </td>
+							<td > {{ doc.fee }} </td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+
+			<h6> Billed to us </h6>
+			<table class="table table-stripped">
+				<thead>
+					<tr id="documents_header">
+						<th class="col-sm-1"> No </th>
+						<th class="col-sm-8"> Document </th>
+						<th class="col-sm-1"> Quantity </th>
+						<th class="col-sm-1"> Unit Price </th>
+						<th class="col-sm-1"> Total </th>
+						<th class="col-sm-1"> Fee </th>
+					</tr>
+				</thead>
+				<tbody id="documents_body">
+					{% for doc in data.documents %}
+						{% if doc.fee > 0 %}
+							<tr>
+								<td > {{ doc.no }} </td>
+								<td > {{ doc.name }} </td>
+								<td > {{ doc.quantity }} </td> 
+								<td > {{ doc.unit_price }} </td>
+								<td > {{ doc.total }} </td>
+								<td > {{ doc.fee }} </td>
+							</tr>
+						{% endif %}
+					{% endfor %}
+					<tr> 
+						<td colspan="4"></td> 
+						<td> Fee => </td>
+						<td> <strong class="text text-info"> {{ fee_total }} </strong> </td> 
+					</tr>
+				</tbody>
+			</table>
+
+		</div>
+
+	</div>
+
+	<script language = "javascript">
+		console.log(JSON.parse('{{js_string}}'));
+	</script>
+{% endblock %}

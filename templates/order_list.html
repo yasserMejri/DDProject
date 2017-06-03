@@ -1,0 +1,12 @@
+{% extends "main.html" %}
+
+{% block content %}
+<div class="col-sm-12">
+	<h3> Order List </h3>
+	<ul class="order_list col-sm-12 list-group">
+	{% for order in orders %}
+		<li class="list-group-item" > <a href="{% url 'order_review' order.id %}"> {{ order }} </a> </li>
+	{% endfor %}
+	</ul>
+</div>
+{% endblock %}

@@ -311,7 +311,7 @@ class DataWidget(forms.Widget):
 
 class LocationWidget(forms.Widget):
 	template_name = 'widgets/location.html'
-	fields = [ 'name', 'address', 'post', 'country' ]
+	fields = [ 'name', 'address', 'post', 'country', 'email', 'phone', 'fax' ]
 
 	def render(self, name, value, attrs=None):
 		loc_fields = [ [item.id, item.fields] for item in models.Service.objects.all() ]

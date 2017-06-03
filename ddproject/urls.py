@@ -24,5 +24,8 @@ urlpatterns = [
     url(r'^login/$', d_views.d_login, name="login"), 
     url(r'^logout/$', d_views.d_logout, name="logout"), 
     url(r'^register/$', d_views.register, name="register"), 
-    url(r'^new_order/$', d_views.new_order, name="new_order")
+    url(r'^new_order/$', d_views.new_order, name="new_order"), 
+    url(r'^order_view/(?P<pk>\d{0,50})/$', d_views.order_review, name="order_review"), 
+    url(r'^order_list/$', d_views.order_list, name="order_list"), 
+    url(r'^service_autocomplete/$', s_views.service_autocomplete, name="service_autocomplete")
 ]
