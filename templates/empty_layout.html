@@ -1,0 +1,60 @@
+{% load bootstrap3 %}
+{% load bootstrap_themes %}
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title> {% block title %} Denning Delivery {% endblock %} </title>
+	<script src = "https://code.jquery.com/jquery-1.12.2.min.js"> </script>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	{# Load CSS and JavaScript #}
+	{# {% bootstrap_css %} #}
+	{# {% bootstrap_javascript %} #}
+
+	{# Display django.contrib.messages as Bootstrap alerts #}
+	{% bootstrap_messages %}
+
+	<link rel="stylesheet" href="{% static 'vendor/font-awesome-4.7.0/css/font-awesome.min.css' %}" type="text/css">
+	<link rel="stylesheet" href="{% static 'vendor/bootstrap4alpha/css/bootstrap.css' %}" type="text/css">
+	<link rel="stylesheet" href="{% static 'theme/dark_blue_adminux.css' %}" type="text/css">
+    <link href="{% static '/css/style.css' %}" rel="stylesheet" />
+
+    <script src = "{% static 'vendor/bootstrap4alpha/js/tether.min.js' %}"> </script>
+	<script src = "{% static 'vendor/bootstrap4alpha/js/bootstrap.min.js' %}"> </script>
+
+    {% block header_addition %} {% endblock %}
+
+</head>
+
+<body class="blue_theme" >
+
+	<div class="content wrapper-content">
+		{% block content %}
+			<label style='font-size: 400px;'> DD </label>
+		{% endblock %}
+
+		<h1 class="top-gap"> &nbsp; </h1>
+
+	</div>
+
+	<div class="clearfix"> </div>
+
+
+	<div class="clearfix"> </div>
+
+	<script language = "javascript">	
+		function capitalizeFirstLetter(string) {
+			return string.charAt(0).toUpperCase() + string.slice(1);
+		}
+		var csrf = $("{% csrf_token %}").val(); 
+	</script>
+
+	{% block custom_script %} {% endblock %}
+
+</body>
+
+</html>

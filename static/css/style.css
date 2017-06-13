@@ -1,3 +1,7 @@
+html {
+	font-size: 80%;
+}
+
 select {
 	 background: #fff;
 }
@@ -7,12 +11,33 @@ td {
 }
 
 select {
-	height: 27px;
+	/*height: 23px;*/
 }
 
 td > input,
 td > select {
 	width: 100%;
+}
+
+.portal input {
+	display: inline-block;
+}
+
+.portal {
+	align-items: flex-start;
+}
+
+.portal-item {
+	display: inline-block;
+	align-items: flex-start;
+}
+
+th.cell-sm {
+	width: 8%;
+}
+
+th.cell-bg {
+
 }
 
 .full-width {
@@ -26,6 +51,10 @@ td > select {
 	position: fixed;
 	z-index: 10;
 	top: 0;
+}
+
+.top-gap {
+	margin-top: 50px;
 }
 
 .header .opaq-background {
@@ -109,4 +138,12 @@ td > select {
 img.qr-code {
 	box-shadow: 0 0 5px 7px #999;
     padding: 5px;
+    height: 100%;
+}
+
+.qrcode-wrapper {
+	width: 220px;
+	height: 220px;
+	border: 5px dotted #c8d4f9;
+	background: #000;
 }

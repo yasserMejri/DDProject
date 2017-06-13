@@ -41,7 +41,10 @@ INSTALLED_APPS = [
     'bootstrap3', 
     'bootstrap_themes', 
     'delivery',
-    'service'
+    'service',
+    'postman',
+    'pcenter', 
+    'location_field.apps.DefaultConfig'
 ]
 
 MIDDLEWARE = [

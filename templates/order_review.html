@@ -5,17 +5,18 @@
 {% load extra %}
 
 {% block content %}
-	<div class="col-sm-9 col-sm-offset-2">
+	<div class="col-md-14 offset-md-1 portal row">
 	<h2> Order #{{order.id}} by {{ order.user.first_name }} {{ order.user.last_name }} </h2>
-		<div class="col-sm-9">
-			<div class="col-sm-offset-1 col-sm-5">
+	<br/>
+		<div class="col-md-12 portal-item row">
+			<div class="offset-md-1 col-md-5  portal-item">
 				<h4> Sending Part </h4>
 				<label> Name: </label> <span> {{ order.user.first_name }} {{ order.user.last_name }} </span> <br/>
 				<label> Address: </label> <span> {{ data.sender.address }} </span> <br/>
 				<label> Postcode: </label> <span> {{ data.sender.postcode }} </span> <br/>
 				<label> Country </label> <span> {{ countries|get_item:data.sender.country }} </span> <br/>
 			</div>
-			<div class="col-sm-offset-1 col-sm-4">
+			<div class="offset-md-1 col-md-7  portal-item">
 				<h4> Receiving Part </h4>
 				<label> Name: </label> <span> {{ data.receiver.name }} </span> <br/>
 				<label> Address: </label> <span> {{ data.receiver.address }} </span> <br/>
@@ -24,39 +25,47 @@
 			</div>
 
 			{% if data.service.service %}
-				<div class="col-sm-10 col-sm-offset-1">
-					<h3> Service Detail </h3>
+				{# <div class="clearfix"> </div> #}
+				<div class="col-md-15 offset-md-1  portal-item row">
 					<br/>
-					<div class="col-sm-6">
-						<label> Service </label> <span> {{ data.service.super.name }} </span> <br/>
-						<label> Category </label> <span> {{ data.service.service.name }} </span> <br/>
-						<label> Action </label> <span> {{ data.service.subservice.name }} </span>
-					</div>
-					<div class="col-sm-4 col-sm-offset-1">
-						<h5> {{ data.service.service.itemName }} </h5>
-						{% with data.service.service|get_item:data.service.service.itemName as items %}
-							{% for item, value in items.items %}
-								<label> {{ value.name }} </label> <span> {{ value.value }} </span> <br/>
-							{% endfor %}
-						{% endwith %}
+					<h3> Service Detail </h3>
+					<div class="row">
+						<div class="col-md-4  portal-item">
+							<label> Service </label> <span> {{ data.service.super.name }} </span> <br/>
+							<label> Category </label> <span> {{ data.service.service.name }} </span> <br/>
+							<label> Action </label> <span> {{ data.service.subservice.name }} </span>
+						</div>
+						<div class="col-md-4 offset-md-1  portal-item">
+							<h5> {{ data.service.service.itemName }} </h5>
+							{% with data.service.service|get_item:data.service.service.itemName as items %}
+								{% for item, value in items.items %}
+									<label> {{ value.name }} </label> <span> {{ value.value }} </span> <br/>
+								{% endfor %}
+							{% endwith %}
+						</div>
 					</div>
 				</div>
 			{% endif %}
 		</div>
-		<img src="{% static order.qrcode.url%}" class="col-sm-3 qr-code" />
+		<img src="{% static order.qrcode.url%}" class="col-md-3 qr-code  portal-item" />
 
-		<div class="col-sm-12">
+		<div class="clearfix"> </div>
+
+		<hr/>
+
+		<div class="documents col-md-16">
 			<h3> Documents </h3>
 			<h6> All documents </h6>
-			<table class="table table-stripped">
+			<table class="table table-stripped col-md-16">
 				<thead>
-					<tr id="documents_header">
-						<th class="col-sm-1"> No </th>
-						<th class="col-sm-8"> Document </th>
-						<th class="col-sm-1"> Quantity </th>
-						<th class="col-sm-1"> Unit Price </th>
-						<th class="col-sm-1"> Total </th>
-						<th class="col-sm-1"> Fee </th>
+					<tr class="col-md-16" id="documents_header">
+						<th class="cell-sm"> No </th>
+						<th class="cell-sm"> Name </th>
+						<th class="cell-lg"> Description </th>
+						<th class="cell-sm"> Quantity </th>
+						<th class="cell-sm"> Unit Price </th>
+						<th class="cell-sm"> Total </th>
+						<th class="cell-sm"> Fee </th>
 					</tr>
 				</thead>
 				<tbody id="documents_body">
@@ -64,6 +73,7 @@
 						<tr>
 							<td > {{ doc.no }} </td>
 							<td > {{ doc.name }} </td>
+							<td > {{ doc.description }} </td>
 							<td > {{ doc.quantity }} </td> 
 							<td > {{ doc.unit_price }} </td>
 							<td > {{ doc.total }} </td>
@@ -74,15 +84,16 @@
 			</table>
 
 			<h6> Billed to us </h6>
-			<table class="table table-stripped">
+			<table class="table table-stripped col-md-16">
 				<thead>
 					<tr id="documents_header">
-						<th class="col-sm-1"> No </th>
-						<th class="col-sm-8"> Document </th>
-						<th class="col-sm-1"> Quantity </th>
-						<th class="col-sm-1"> Unit Price </th>
-						<th class="col-sm-1"> Total </th>
-						<th class="col-sm-1"> Fee </th>
+						<th class="cell-sm"> No </th>
+						<th class="cell-sm"> Name </th>
+						<th class="cell-lg"> Description </th>
+						<th class="cell-sm"> Quantity </th>
+						<th class="cell-sm"> Unit Price </th>
+						<th class="cell-sm"> Total </th>
+						<th class="cell-sm"> Fee </th>
 					</tr>
 				</thead>
 				<tbody id="documents_body">
@@ -91,6 +102,7 @@
 							<tr>
 								<td > {{ doc.no }} </td>
 								<td > {{ doc.name }} </td>
+								<td > {{ doc.description }} </td>
 								<td > {{ doc.quantity }} </td> 
 								<td > {{ doc.unit_price }} </td>
 								<td > {{ doc.total }} </td>
@@ -99,7 +111,7 @@
 						{% endif %}
 					{% endfor %}
 					<tr> 
-						<td colspan="4"></td> 
+						<td colspan="5"></td> 
 						<td> Fee => </td>
 						<td> <strong class="text text-info"> {{ fee_total }} </strong> </td> 
 					</tr>

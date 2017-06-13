@@ -1,0 +1,103 @@
+{% extends "main.html" %}
+{% load static %}
+
+{% load extra %}
+
+{% block content %}
+<div class="col-sm-14 offset-md-1">
+	<h3> Order List </h3>
+
+	<ul class="nav nav-tabs" role="tablist">
+		{% for key in orders %}
+			<li class="nav-item"> 
+				<a class="nav-link {%if forloop.counter == 1 %} active {% endif %} " data-toggle="tab" href="#id-{{key}}" role="tab" >
+					{{ key|title }}
+				</a> 
+			</li>
+		{% endfor %}
+	</ul>
+
+	<div class="tab-content">
+	{% for key in orders %}
+		<div class="tab-pane {%if forloop.counter == 1 %} active {% endif %}" id="id-{{key}}" role="tabpanel" >
+			<ul class="order_list col-sm-16 list-group">
+				{% for order in orders|get_item:key %}
+					<li class="list-group-item" > 
+						<label class=""> <a href="{% url 'order_review' order.order.id %}">  
+							 {{ order.order }} 
+						</a>  </label>
+						<div class="d-flex mr-auto"> &nbsp;</div>
+						<label class="pull-right" {% if cur_pc.id != order.next.id %} disabled {% endif %} > 
+							{% if key != 'complete' %}
+								{{ order.next }} 
+								<label class="order_next" itemnext="{{ order.next.id }}" itemorder="{{ order.order.id }}" itemkey="{{key}}">
+									<span class="fa fa-star text text-success text-lg"> </span>
+								</label>
+							{% endif %}
+						</label>
+					</li>
+				{% endfor %}
+			</ul>
+			{% if key != 'complete' and orders|get_item:key %}
+				<br/>
+				<button type="key" class="btn btn-primary offset-md-14 btn-md bulk-action"> 
+					{% if key == 'confirm' %}
+						Confirm
+					{% else %}
+						Submit
+					{% endif %}
+				</button>
+			{% endif %}
+		</div>
+	{% endfor %}
+	</div>
+
+</div>
+{% endblock %}
+
+{% block custom_script %}
+	<script language="javascript"> 
+		$(document).ready(function() {
+			$(".order_next").click(function() {
+				register_window = window.open("{% url 'pcenter_register_order' %}"+"?order="+$(this).attr("itemorder"), "MsgWindow", "width=1000,height=600");
+				function check_child() {
+					if(register_window.closed) {
+						console.log("HERE");
+						window.location = window.location;
+						clearInterval(intval);
+					}
+				}
+				var intval = setInterval(check_child, 1000);
+
+			}); 
+			$(".bulk-action").click(function() {
+				var targets = $(this).parent().find("label.order_next");
+				var payload = "[", type='next';
+				targets.each(function() {
+					var where = $(this).attr('itemkey');
+					if(where == 'confirm') {
+						payload += '' + $(this).attr("itemorder") + ',';
+						type = 'confirm'
+					}
+					else
+						payload += '{"next_id":"'+$(this).attr("itemnext")+'", "order_id":"'+$(this).attr("itemorder")+'"},';
+				}); 
+				payload = payload.substring(0,payload.length-1)+']';
+
+				var url = '';
+
+				if(type == 'next')
+					url = "{% url 'pcenter_order_next_bulk' %}";
+				else if(type == 'confirm')
+					url = "{% url 'pcenter_order_confirm_bulk' %}";
+				$.post(
+					url, {
+						'payload': payload, 
+						'csrfmiddlewaretoken': csrf
+					}, function(r) {
+						window.location = window.location;
+					} ); 
+			}); 
+		}); 
+	</script>
+{% endblock %}

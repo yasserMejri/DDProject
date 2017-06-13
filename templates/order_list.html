@@ -1,11 +1,56 @@
 {% extends "main.html" %}
+{% load static %}
 
 {% block content %}
-<div class="col-sm-12">
+<div class="col-sm-14 offset-md-1">
 	<h3> Order List </h3>
-	<ul class="order_list col-sm-12 list-group">
+
+	<ul class="nav nav-tabs" role="tablist">
+		{% for key in u_orders %}
+			<li class="nav-item"> 
+				<a class="nav-link {%if forloop.counter == 1 %} active {% endif %} " data-toggle="tab" href="#id-{{key}}" role="tab" >
+					{{ key|title }}
+				</a> 
+			</li>
+		{% endfor %}
+	</ul>
+
+	<div class="tab-content">
+	{% for key in u_orders %}
+		<div class="tab-pane {%if forloop.counter == 1 %} active {% endif %}" id="id-{{key}}" role="tabpanel" >
+			<ul class="order_list col-sm-16 list-group">
+				{% for data in u_orders|get_item:key %}
+				<li class="list-group-item" > 
+					{% with order=data|get_item:'order'  before=data|get_item:'from' %}
+					<label class=""> <a href="{% url 'order_review' order.id %}">  
+						 {{ order }} 
+					</a>  </label>
+					<div class="d-flex mr-auto"> &nbsp;</div>
+					{% if key == 'confirm' %}
+						<label class="pull-right order_next" itemorder="{{ order.id }}" itemfrom="{{ before.id }}" >
+							<a href="{% url 'order_confirm' order.id before.id %}">
+								<span class="fa fa-flag-checkered text text-success text-lg"> </span>
+							</a>
+						</label>
+					{% endif %}
+					{% endwith %}
+				</li>
+				{% endfor %}
+			</ul>
+		</div>
+	{% endfor %}
+	</div>
+
+	<hr />
+
+	<ul class="order_list col-sm-16 list-group">
 	{% for order in orders %}
-		<li class="list-group-item" > <a href="{% url 'order_review' order.id %}"> {{ order }} </a> </li>
+		<li class="list-group-item" > 
+			<a href="{% url 'order_review' order.id %}">  
+				{# <span class="userpic">  </span> #}
+				<label> {{ order }}  </label>
+			</a> 
+		</li>
 	{% endfor %}
 	</ul>
 </div>

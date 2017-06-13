@@ -40,12 +40,6 @@ def service_autocomplete(request):
 	else:
 		location_data = []
 
-
-	print '_________________________________________________'
-	print target_field
-	print '_________________________________________________'
-
-
 	result = {}
 
 	result[service.itemName] = []

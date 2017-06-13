@@ -17,6 +17,8 @@ from django.conf.urls import url
 from django.contrib import admin
 from delivery import views as d_views
 from service import views as s_views
+from postman import views as pm_views
+from pcenter import views as pc_views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
@@ -27,5 +29,21 @@ urlpatterns = [
     url(r'^new_order/$', d_views.new_order, name="new_order"), 
     url(r'^order_view/(?P<pk>\d{0,50})/$', d_views.order_review, name="order_review"), 
     url(r'^order_list/$', d_views.order_list, name="order_list"), 
-    url(r'^service_autocomplete/$', s_views.service_autocomplete, name="service_autocomplete")
+    url(r'^order_confirm/(?P<oid>\d{0,50})/(?P<uid>\d{0,50})/$', d_views.order_confirm, name="order_confirm"), 
+    url(r'^service_autocomplete/$', s_views.service_autocomplete, name="service_autocomplete"), 
+
+    url(r'^postman/add_order/$', pm_views.register_order, name="postman_register_order"), 
+    url(r'^postman/order_list/$', pm_views.order_list, name="postman_order_list"), 
+    url(r'^postman/order/next/$', pm_views.order_next, name="postman_order_next"), 
+    url(r'^postman/order/next_bulk/$', pm_views.order_next_bulk, name="postman_order_next_bulk"), 
+    url(r'^postman/order/confirm/$', pm_views.confirm_order, name="postman_order_confirm"), 
+    url(r'^postman/order/confirm_bulk/$', pm_views.confirm_order_bulk, name="postman_order_confirm_bulk"), 
+
+    url(r'^pcenter/order_list/$', pc_views.order_list, name="pcenter_order_list"), 
+    url(r'^pcenter/add_order/$', pc_views.register_order, name="pcenter_register_order"), 
+    url(r'^pcenter/order/next/$', pc_views.order_next, name="pcenter_order_next"), 
+    url(r'^pcenter/order/next_bulk/$', pc_views.order_next_bulk, name="pcenter_order_next_bulk"), 
+    url(r'^pcenter/order/confirm/$', pc_views.confirm_order, name="pcenter_order_confirm"), 
+    url(r'^pcenter/order/confirm_bulk/$', pc_views.confirm_order_bulk, name="pcenter_order_confirm_bulk")
+
 ]

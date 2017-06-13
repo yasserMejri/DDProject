@@ -7,54 +7,59 @@
 		{% csrf_token %}
 		<input type="hidden" name="order-data" id="order-data" />
 	</form>
-
-	<h3 class="col-sm-offset-1"> Order Form </h3>
-	<ul class="nav nav-tabs col-sm-offset-1 col-sm-10" id="superservices">
+	<br/>
+	<h3 class=" offset-md-1"> Order Form </h3>
+	<ul class="nav nav-tabs  offset-md-1 col-md-15" id="superservices">
 		<li class="active"> <a data-toggle="tab" href="#filing"> Filing </a> </li>
 		<li> <a data-toggle="tab" href="#searches"> Searches </a> </li>
 		<li> <a data-toggle="tab" href="#delivery"> Delivery </a> </li>
 	</ul>
 
-	<div class="portal order-form">
-		<div class="col-sm-4 col-sm-offset-1">
-			<div class="sender-info col-sm-12">
+	<div class="portal order-form row">
+		<br/>
+		<div class="clearfix"> </div>
+
+		<div class="col-md-6 portal-item offset-md-1">
+			<div class="sender-info col-md-16">
+				<br/>
 				<h4> Sender </h4>
-				<select id="services" class="col-sm-12 col-xs-12 required" > 
+				<select id="services" class="col-md-15 col-xs-16 required form-control" > 
 					<option> Service </option>
 					<option> Land Forms </option>
 					<option> Court </option>
 				</select>
-				<input type="text" id="sender-address" placeholder="Address" value="{{ user.userprofile.address }}" class="col-sm-8 col-xs-12 required" />
-				<input type="text" id="sender-postcode" placeholder="Postcode" value="{{ user.userprofile.postcode }}" class="col-sm-4 col-xs-12 required" />
-				<select id="sender-country" class="col-sm-12 required">
+				<input type="text" id="sender-address" placeholder="Address" value="{{ user.userprofile.address }}" class="col-md-10 col-xs-16 required form-control" />
+				<input type="text" id="sender-postcode" placeholder="Postcode" value="{{ user.userprofile.postcode }}" class="col-md-5 col-xs-16 required form-control" />
+				<select id="sender-country" class="col-md-15 required form-control">
 					<option> country * </option>
 					{% for code, value in countries.items %}
 						<option value="{{code}}" {% if code == user.userprofile.country %} selected {%endif%}  > {{value}} </option>
 					{% endfor %}
 				</select>
-				<input type="email" id="sender-email" value="{{ user.email }}" placeholder="email" class="col-sm-4 col-xs-12 required" >
-				<input type="text" id="sender-phone" value="{{ user.userprofile.phone }}" placeholder="Phone" class="col-sm-4 col-xs-12 required">
-				<input type="text" id="sender-fax" value="{{ user.userprofile.fax }}" placeholder="Fax" class="col-sm-4 col-xs-12">
+				<input type="email" id="sender-email" value="{{ user.email }}" placeholder="email" class="col-md-5 col-xs-16 required form-control" >
+				<input type="text" id="sender-phone" value="{{ user.userprofile.phone }}" placeholder="Phone" class="col-md-5 col-xs-16 required form-control">
+				<input type="text" id="sender-fax" value="{{ user.userprofile.fax }}" placeholder="Fax" class="col-md-5 col-xs-16 form-control">
 			</div>
-
-			<div class="receiver-info col-sm-12">
+			<div class="clearfix"> </div>
+			<div class="receiver-info col-md-16">
+				<br/>
 				<h4> Receiver </h4>
-				<input type="text" id="receiver-name" placeholder="Name" class="col-sm-12 col-xs-12 required">
-				<input type="text" id="receiver-address" placeholder="Address" class="col-sm-8 col-xs-12 required" />
-				<input type="text" id="receiver-postcode" placeholder="Postcode" class="col-sm-4 col-xs-12 required" />
-				<select id="receiver-country" class="col-sm-12 required">
+				<input type="text" id="receiver-name" placeholder="Name" class="col-md-15 col-xs-16 required form-control">
+				<input type="text" id="receiver-address" placeholder="Address" class="col-md-10 col-xs-16 required form-control" />
+				<input type="text" id="receiver-postcode" placeholder="Postcode" class="col-md-5 col-xs-16 required form-control" />
+				<select id="receiver-country" class="col-md-15 required form-control">
 					<option> country * </option>
 					{% for code, value in countries.items %}
 						<option value="{{code}}"> {{value}} </option>
 					{% endfor %}
 				</select>
-				<input type="email" id="receiver-email" placeholder="email" class="col-sm-4 col-xs-12 required" >
-				<input type="text" id="receiver-phone" placeholder="Phone" class="col-sm-4 col-xs-12 required">
-				<input type="text" id="receiver-fax" placeholder="Fax" class="col-sm-4 col-xs-12">
+				<input type="email" id="receiver-email" placeholder="email" class="col-md-5 col-xs-16 required form-control" >
+				<input type="text" id="receiver-phone" placeholder="Phone" class="col-md-5 col-xs-16 required form-control">
+				<input type="text" id="receiver-fax" placeholder="Fax" class="col-md-5 col-xs-16 form-control">
 			</div>
 		</div>
 
-		<div class="service col-sm-5 col-sm-offset-1">
+		<div class="service col-md-7 portal-item">
 			<h4> Service Detail </h4>
 			<div id="service_detail">
 				<span class="text-warning text" id="empty-service"> No Service available </span>
@@ -67,27 +72,27 @@
 						</tbody>
 					</table>
 					<label> Select Type of Service : </label>
-					<select id="detail-subservices" class="full-width">
+					<select id="detail-subservices" class="form-control full-width">
 					</select>
 				</div>
 			</div>
 		</div>
 
 		<div class="clearfix"> </div>
-		<hr class="col-sm-offset-1 col-sm-10" />
+		<hr class="col-md-offset-1 col-md-14" />
 
-		<div class="documents col-sm-10 col-sm-offset-1">
+		<div class="documents col-md-14  offset-md-1">
 			<h4> Documents Information </h4>
 			<h5> All Documents </h5>
-			<table class="table table-stripped">
+			<table class="table table-stripped col-md-16">
 				<thead>
 					<tr id="documents_header">
-						<th class="col-sm-1"> No </th>
-						<th class="col-sm-8"> Document </th>
-						<th class="col-sm-1"> Quantity </th>
-						<th class="col-sm-1"> Unit Price </th>
-						<th class="col-sm-1"> Total </th>
-						<th class="col-sm-1"> - </th>
+						<th class="cell-sm"> No </th>
+						<th class="cell-lg"> Document </th>
+						<th class="cell-sm"> Quantity </th>
+						<th class="cell-sm"> Unit Price </th>
+						<th class="cell-sm"> Total </th>
+						<th class="cell-sm"> - </th>
 					</tr>
 				</thead>
 				<tbody id="documents_body">
@@ -107,12 +112,12 @@
 			</table>
 		</div>
 
-		<div class="order-form-footer col-sm-10 col-sm-offset-1">
+		<div class="order-form-footer col-md-14  offset-md-1">
 			<label>
 				<input type="checkbox" id="agree-policy" class=""/>
 				<span> &nbsp;&nbsp; By clicking this checkbox you agree to our <a href="/"> End User Addreement </a> </span>
 			</label>
-			<button class="pull-right btn btn-default" id="submit_order" > Submit order </button>
+			<button class="pull-right btn btn-info btn-lg" id="submit_order" > Submit order </button>
 		</div>
 
 	</div>

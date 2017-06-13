@@ -13,6 +13,7 @@ from django.utils.safestring import SafeString
 from service import widgets
 from delivery import models
 from service import models as s_models
+from postman import views as pm_views
 
 import json
 
@@ -20,7 +21,7 @@ import json
 
 def index(request):
 	return render(request, 'main.html', {
-		'user': request.user
+		'user': request.user, 
 		})
 
 
@@ -56,39 +57,48 @@ def register(request):
 	msg_type = ''
 
 	if request.method == 'POST':
-		email = request.POST.get('email')
-		password = request.POST.get('password')
-		firstname = request.POST.get('firstname')
-		lastname = request.POST.get('lastname')
+		user = None
+		profile = None
+		try:
+			email = request.POST.get('email')
+			password = request.POST.get('password')
+			firstname = request.POST.get('firstname')
+			lastname = request.POST.get('lastname')
 
-		phone = request.POST.get('phone')
-		fax = request.POST.get('fax')
-		company = request.POST.get('company')
-		address = request.POST.get('address')
-		postcode = request.POST.get('postcode')
-		country = request.POST.get('country')
+			phone = request.POST.get('phone')
+			fax = request.POST.get('fax')
+			company = request.POST.get('company')
+			address = request.POST.get('address')
+			postcode = request.POST.get('postcode')
+			country = request.POST.get('country')
 
-		if len(User.objects.filter(email=email)) > 0:
-			msg = 'Email already used. Please try again with different email'
-			msg_type = 'danger'
-		user = User(
-			username=email,
-			email=email,
-			first_name = firstname,
-			last_name = lastname
-			)
-		user.save()
-		user.set_password(password)
-		user.save()
-		profile = models.UserProfile(
-			phone=phone,
-			fax=fax,
-			company=company,
-			address=address,
-			postcode=postcode,
-			country=country
-			)
-		profile.save()
+			if len(User.objects.filter(email=email)) > 0:
+				msg = 'Email already used. Please try again with different email'
+				msg_type = 'danger'
+			user = User(
+				username=email,
+				email=email,
+				first_name = firstname,
+				last_name = lastname
+				)
+			user.save()
+			user.set_password(password)
+			user.save()
+			profile = models.UserProfile(
+				user=user, 
+				phone=phone,
+				fax=fax,
+				company=company,
+				address=address,
+				postcode=postcode,
+				country=country
+				)
+			profile.save()
+		except:
+			if user:
+				user.delete()
+			if profile:
+				profile.delete()
 		return HttpResponseRedirect(reverse('login'))
 
 	countries = widgets.COUNTRY_CHOICES
@@ -112,8 +122,31 @@ def new_order(request):
 			status = models.OrderStatus.objects.get(pk=1), 
 			priority = models.OrderPriority.objects.get(pk=1)
 			)
+		order.save()
 		order.generate_qrcode();
 		order.save()
+
+		nxt_postman = pm_views.find_next_dest(request.user.id, order.id)
+
+		try:
+			orders = json.loads(nxt_postman.userprofile.orders)
+		except:
+			orders = nxt_postman.userprofile.orders
+
+		try:
+			orders['confirm'].append({
+				'order': str(order.id), 
+				'from': request.user.id
+				})
+		except:
+			orders['confirm'] = []
+			orders['confirm'].append({
+				'order': str(order.id), 
+				'from': request.user.id
+				})
+		nxt_postman.userprofile.orders = json.dumps(orders)
+		nxt_postman.userprofile.save()
+
 		return HttpResponseRedirect(reverse('order_review', kwargs={'pk':order.id}))
 
 	for superservice in superservices:
@@ -152,7 +185,6 @@ def new_order(request):
 		'service_fields': SafeString(json.dumps(service_fields))
 		})
 
-
 @login_required
 def order_review(request, pk):
 
@@ -177,7 +209,115 @@ def order_list(request):
 
 	orders = models.Order.objects.filter(user=request.user)
 
+	try:
+		u_orders = json.loads(request.user.userprofile.orders)
+	except:
+		u_orders = request.user.userprofile.orders
+
+	for key in u_orders:
+		idx = 0
+		for val in u_orders[key]:
+			u_orders[key][idx]['order'] = models.Order.objects.get(pk=int(val['order']))
+			if key != 'complete':
+				u_orders[key][idx]['from'] = User.objects.get(pk=int(val['from']))
+			idx = idx + 1
+	u_orders['sent'] = []
+	for order in orders:
+		u_orders['sent'].append({
+			'order': order,
+			'from': None
+			})
+
 	return render(request, 'order_list.html', {
 		'user': request.user,
-		'orders': orders
+		'orders': [], 
+		'u_orders': u_orders
 		})
+
+@login_required
+def order_confirm(request, oid, uid):
+
+	user = request.user
+	order = models.Order.objects.get(pk=oid)
+	before = User.objects.get(pk=uid)
+
+	data = json.loads(order.data)
+	fee_total = 0;
+	for item in data['documents']:
+		fee_total = fee_total + item['fee']
+
+	if request.method=="POST":
+		# Find order from Client's 'confirm' list and mark as 'received'
+
+
+		orders = []
+		try:
+			orders = json.loads(order.user.userprofile.orders)
+		except:
+			orders = order.user.userprofile.orders
+
+		try:
+			orders['complete'].append({
+				'order': order.id,
+				'from': None
+				})
+		except:
+			orders['complete'] = []
+			orders['complete'].append({
+				'order': order.id,
+				'from': None
+				})
+		order.user.userprofile.orders = json.dumps(orders)
+		order.user.userprofile.save()
+
+		orders = []
+		try:
+			orders = json.loads(user.userprofile.orders)
+		except:
+			orders = user.userprofile.orders
+
+		for order in orders['confirm']:
+			if order['order'] == oid:
+				orders['confirm'].remove(order)
+				try:
+					orders['received'].append(order)
+				except:
+					orders['received'] = []
+					orders['received'].append(order)
+				break
+
+		user.userprofile.orders = json.dumps(orders)
+		user.userprofile.save()
+
+		# Find order in Postman's 'progress' list and mark as 'complete'
+		orders = []
+
+		try:
+			orders = json.loads(before.userprofile.orders)
+		except:
+			orders = before.userprofile.orders
+
+		for order in orders['progress']:
+			if order['order'] == oid:
+				orders['progress'].remove(order)
+				try:
+					orders['complete'].append(order)
+				except:
+					orders['complete'] = []
+					orders['complete'].append(order)
+				break
+		before.userprofile.orders = json.dumps(orders)
+		before.userprofile.save()
+
+		return HttpResponseRedirect(reverse('order_list'))
+
+	return render(request, 'order_confirm.html', {
+		'order': order, 
+		'user': request.user, 
+		'data': data, 
+		'countries': widgets.COUNTRY_CHOICES, 
+		'js_string': SafeString((order.data)), 
+		'fee_total': fee_total, 
+		'from': before
+		})
+

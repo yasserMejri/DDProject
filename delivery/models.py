@@ -11,6 +11,7 @@ from location_field.models.plain import PlainLocationField
 import qrcode
 import StringIO
 import jsonfield
+import json
 
 
 COUNTRY_CHOICES =(
@@ -266,7 +267,7 @@ COUNTRY_CHOICES =(
 )
 
 class UserType(models.Model):
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=50, unique=True)
 
     def __str__(self):
         return self.name
@@ -281,6 +282,8 @@ class UserProfile(models.Model):
     address = models.CharField(max_length=255, default="N/A")
     postcode = models.CharField(max_length=10)
     user_type = models.ForeignKey(UserType, default=0)
+
+    orders = jsonfield.JSONField(default="{}")
 
     location = PlainLocationField(based_fields=['address'], zoom=7)
 
@@ -313,13 +316,15 @@ class Order(models.Model):
     def generate_qrcode(self):
         qr = qrcode.QRCode(
             version=1,
-            error_correction=qrcode.constants.ERROR_CORRECT_L,
-            box_size=12,
+            error_correction=qrcode.constants.ERROR_CORRECT_M,
+            box_size=8,
             border=0,
         )
-        qr.add_data(str(self.id)+":")
-        qr.add_data(str(self.data)+":")
-        qr.add_data(self.creationdate)
+        content = {}
+        content['id'] = self.id
+        content['content'] = self.data
+        content['time'] = unicode(self.creationdate)
+        qr.add_data(json.dumps(content))
         qr.make(fit=True)
 
         img = qr.make_image()
@@ -331,17 +336,10 @@ class Order(models.Model):
         self.qrcode.save(filename, filebuffer)
 
     def __str__(self):
-        return self.user.__str__() + "'s Order  on '" + self.creationdate.strftime("%Y-%m-%d %H:%M:%S") 
-
-class Document(models.Model):
-    name =models.CharField(max_length = 100)
-    description = models.TextField()
-    quantity = models.IntegerField()
-    order = models.ForeignKey(Order)
-    unit_price = models.IntegerField()
-
-    def __str__(self):
-        return self.name
+        try:
+            return self.user.userprofile.__str__() + "'s Order  on '" + self.creationdate.strftime("%Y-%m-%d %H:%M:%S") 
+        except:
+            return self.user.__str__() + "'s Order  on '" + self.creationdate.strftime("%Y-%m-%d %H:%M:%S") 
 
 class OrderAction(models.Model):
     action_name = models.CharField(max_length = 255)

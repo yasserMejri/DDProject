@@ -4,28 +4,28 @@ $(document).ready(function() {
 	var cur_sp_idx, cur_sv_idx, cur_sb_idx; // Current SuperService, Service, SubService indexes
 	var docs = [];
 	var doc_fields = [
-		{'name': 'No', 'type': 'text', 'class':'col-sm-1', 'v_name':'no'}, 
-		{'name': 'Name', 'type': 'text', 'class':'col-sm-2', 'v_name': 'name'}, 
-		{'name': 'Description', 'type': 'text', 'class':'col-sm-7', 'v_name': 'description'}, 
-		{'name': 'Quantity', 'type': 'number', 'class':'col-sm-1', 'v_name': 'quantity'}, 
-		{'name': 'Unit Price', 'type': 'number', 'class':'col-sm-1', 'v_name': 'unit_price'}, 
-		{'name': 'Total', 'type': 'hidden', 'class':'col-sm-1', 'v_name': 'total'}, 
-		{'name': 'Fee', 'type': 'hidden', 'class':'col-sm-1', 'v_name': 'fee'}
+		{'name': 'No', 'type': 'text', 'class':'cell-sm', 'v_name':'no'}, 
+		{'name': 'Name', 'type': 'text', 'class':'cell-sm', 'v_name': 'name'}, 
+		{'name': 'Description', 'type': 'text', 'class':'cell-lg', 'v_name': 'description'}, 
+		{'name': 'Quantity', 'type': 'number', 'class':'cell-sm', 'v_name': 'quantity'}, 
+		{'name': 'Unit Price', 'type': 'number', 'class':'cell-sm', 'v_name': 'unit_price'}, 
+		{'name': 'Total', 'type': 'hidden', 'class':'cell-sm', 'v_name': 'total'}, 
+		{'name': 'Fee', 'type': 'hidden', 'class':'cell-sm', 'v_name': 'fee'}
 	]
 
 	$("#superservices").html('');
 	for(sp_idx in service_fields) {
 		service_field = service_fields[sp_idx];
-		var elem = '<li itemprop='+sp_idx+'> <a data-toggle="tab" href="#'+sp_idx+'"> '+service_field['name']+' </a> </li>'; 
+		var elem = '<li class="nav-item" itemprop='+sp_idx+'> <a class="nav-link" data-toggle="tab" href="#'+sp_idx+'"> '+service_field['name']+' </a> </li>'; 
 		$("#superservices").append(elem);
 	}
-	$("#superservices li:first-child").addClass('active');
+	$("#superservices li:first-child > a").addClass('active');
 	$("#superservices li").click(function() {
 		setTimeout(refresh_all, 50);
 	});
 
 	function refresh_all() {
-		cur_sp_idx = parseInt($("#superservices li.active").attr("itemprop"));
+		cur_sp_idx = parseInt($("#superservices li > a.active").parent().attr("itemprop"));
 		$("#services").html('');
 
 		service = undefined;
@@ -69,7 +69,7 @@ $(document).ready(function() {
 			elem = elem + '<th> <label for="'+field['v_name']+'">'+capitalizeFirstLetter(field['name'])+'</label> </th>';
 			elem = elem + '<td>'; 
 			if(field['type'] == 'select') {
-				elem = elem + '<select column = "'+field['v_name']+'" class="value-data select required" >'
+				elem = elem + '<select column = "'+field['v_name']+'" class="form-control value-data select required" >'
 				values = [];
 				if(field['value'] != undefined) {
 					values = field['value'].split(',');
@@ -81,7 +81,7 @@ $(document).ready(function() {
 				}
 				elem = elem + '</select>';
 			} else {
-				elem = elem + '<input type="'+field['type']+'" column = "'+field['v_name']+'" class="value-data '+field['type']+' required" />';
+				elem = elem + '<input type="'+field['type']+'" column = "'+field['v_name']+'" class="form-control value-data '+field['type']+' required" />';
 			}
 			elem = elem +'</td>';
 			elem = elem + '</tr>';
@@ -205,7 +205,7 @@ $(document).ready(function() {
 			var elem = '<th class="'+field['class']+'">'+field['name'] + '</th>';
 			$("#documents_header").append(elem);
 		}
-		$("#documents_header").append('<th class="col-sm-1">-</th>');
+		$("#documents_header").append('<th class="cell-sm">-</th>');
 		$("#documents_body").html('');
 		for(d_idx in docs) {
 			doc = docs[d_idx];
@@ -215,16 +215,16 @@ $(document).ready(function() {
 				elem = elem + '<td class="'+field['class']+'"  title="' + doc[field['v_name']] + '" >' + doc[field['v_name']] + '</td>';
 			}
 			if(doc['delete'])
-				elem = elem + '<td > <span row="'+d_idx+'" class="glyphicon glyphicon-trash remove-row"> </span> </td>';
+				elem = elem + '<td > <span row="'+d_idx+'" class="fa fa-trash-o remove-row"> </span> </td>';
 			else 
-				elem = elem + '<td > <span row="'+d_idx+'" class="glyphicon glyphicon-ban-circle"> </span> </td>';
+				elem = elem + '<td > <span row="'+d_idx+'" class="fa fa-ban"> </span> </td>';
 			elem = elem + '</tr>';
 			$("#documents_body").append(elem);
 		}
 		var elem = '<tr id="new_doc">';
 		for(idx in doc_fields) {
 			field = doc_fields[idx];
-			elem = elem + '<td class="'+field['class']+'"> <input type="'+field['type']+'" itemprop = "'+field['v_name']+'" /></td>';
+			elem = elem + '<td class="'+field['class']+'"> <input class="form-control" type="'+field['type']+'" itemprop = "'+field['v_name']+'" /></td>';
 		}
 		elem = elem + '<td > -</td>';
 		elem = elem + '</tr>';
@@ -289,7 +289,7 @@ $(document).ready(function() {
 	$("#submit_order").click(function() {
 
 		if(!validateForm())
-			return;
+			return false;
 
 		var data = {};
 		data['sender'] = {};

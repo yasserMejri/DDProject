@@ -2,7 +2,7 @@
 
 {% block content %}
 
-	<div class="col-sm-6 col-sm-offset-3 register-form">
+	<div class="col-md-9 offset-md-5 register-form">
 		<form class="form" method="post" id="register-form">
 			{% csrf_token %}
 			<h3> Register </h3>
@@ -49,8 +49,8 @@
 				</select>
 			</div>
 			<label class="text text-danger"> {{ error }} </label>
-			<button class="btn btn-default col-sm-3 col-sm-offset-8" type="submit" name="register">
-				<span class="glyphicon glyphicon-user"> </span> Register
+			<button class="btn btn-primary col-sm-3 offset-md-5" type="submit" name="register">
+				<span class="fa fa-user"> </span> Register
 			</button>
 		</form>
 	</div>
