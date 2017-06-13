@@ -345,7 +345,10 @@ def order_list(request):
 
 	orders_ = d_models.Order.objects.all()
 	orders = []
-	cur_pc = find_next_dest(request.user.id, orders_[0].id)
+	try:
+		cur_pc = find_next_dest(request.user.id, orders_[0].id)
+	except:
+		cur_pc = None
 	for order in orders_:
 		orders.append({
 			'order': order, 
