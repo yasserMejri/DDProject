@@ -1,4 +1,6 @@
 appdirs==1.4.3
+click==6.7
+decorator==4.0.11
 Django==1.11.1
 django-bootstrap==0.2.4
 django-bootstrap-themes==3.3.6
@@ -6,6 +8,7 @@ django-bootstrap3==8.2.3
 django-jsonfield==1.0.1
 django-location-field==2.0.3
 django-material==0.13.1
+geocoder==1.22.6
 googlemaps==2.4.6
 olefile==0.44
 packaging==16.8
@@ -14,5 +17,8 @@ pkg-resources==0.0.0
 pyparsing==2.2.0
 pytz==2017.2
 qrcode==5.3
+qrtools==0.0.2
+ratelim==0.1.6
 requests==2.11.1
 six==1.10.0
+zbar==0.10
