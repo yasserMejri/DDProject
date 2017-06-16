@@ -6,7 +6,7 @@
 
 {% block content %}
 	<div class="col-md-14 offset-md-1 portal row">
-	<h2> Order #{{order.id}} by {{ order.user.first_name }} {{ order.user.last_name }} </h2>
+	<h2 class="col-md-16" > Order #{{order.id}} by {{ order.user.first_name }} {{ order.user.last_name }} </h2>
 	<br/>
 		<div class="col-md-12 portal-item row">
 			<div class="offset-md-1 col-md-5  portal-item">
@@ -60,8 +60,8 @@
 				<thead>
 					<tr class="col-md-16" id="documents_header">
 						<th class="cell-sm"> No </th>
-						<th class="cell-sm"> Name </th>
-						<th class="cell-lg"> Description </th>
+						{# <th class="cell-sm"> Name </th> #}
+						<th class="cell-lg"> Document </th>
 						<th class="cell-sm"> Quantity </th>
 						<th class="cell-sm"> Unit Price </th>
 						<th class="cell-sm"> Total </th>
@@ -72,8 +72,8 @@
 					{% for doc in data.documents %}
 						<tr>
 							<td > {{ doc.no }} </td>
-							<td > {{ doc.name }} </td>
-							<td > {{ doc.description }} </td>
+							{# <td > {{ doc.name }} </td> #}
+							<td > {{ doc.document }} </td>
 							<td > {{ doc.quantity }} </td> 
 							<td > {{ doc.unit_price }} </td>
 							<td > {{ doc.total }} </td>
@@ -88,8 +88,8 @@
 				<thead>
 					<tr id="documents_header">
 						<th class="cell-sm"> No </th>
-						<th class="cell-sm"> Name </th>
-						<th class="cell-lg"> Description </th>
+						{# <th class="cell-sm"> Name </th> #}
+						<th class="cell-lg"> Document </th>
 						<th class="cell-sm"> Quantity </th>
 						<th class="cell-sm"> Unit Price </th>
 						<th class="cell-sm"> Total </th>
@@ -102,7 +102,7 @@
 							<tr>
 								<td > {{ doc.no }} </td>
 								<td > {{ doc.name }} </td>
-								<td > {{ doc.description }} </td>
+								<td > {{ doc.document }} </td>
 								<td > {{ doc.quantity }} </td> 
 								<td > {{ doc.unit_price }} </td>
 								<td > {{ doc.total }} </td>
@@ -111,7 +111,7 @@
 						{% endif %}
 					{% endfor %}
 					<tr> 
-						<td colspan="5"></td> 
+						<td colspan="4"></td> 
 						<td> Fee => </td>
 						<td> <strong class="text text-info"> {{ fee_total }} </strong> </td> 
 					</tr>

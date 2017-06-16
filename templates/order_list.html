@@ -6,23 +6,28 @@
 	<h3> Order List </h3>
 
 	<ul class="nav nav-tabs" role="tablist">
-		{% for key in u_orders %}
+		{% for key in keyorder %}
 			<li class="nav-item"> 
 				<a class="nav-link {%if forloop.counter == 1 %} active {% endif %} " data-toggle="tab" href="#id-{{key}}" role="tab" >
 					{{ key|title }}
 				</a> 
 			</li>
 		{% endfor %}
+		<li class="d-flex mr-auto" > &nbsp; </li>
+		<li class="pull-right col-md-5">
+			<input type="text" class="form-control" id="list-search-box" placeholder="Search" />
+			{# <button class="btn btn-link icon-header " type="submit"><span class="fa fa-search"></span></button> #}
+		</li>
 	</ul>
 
 	<div class="tab-content">
-	{% for key in u_orders %}
+	{% for key in keyorder %}
 		<div class="tab-pane {%if forloop.counter == 1 %} active {% endif %}" id="id-{{key}}" role="tabpanel" >
 			<ul class="order_list col-sm-16 list-group">
 				{% for data in u_orders|get_item:key %}
 				<li class="list-group-item" > 
 					{% with order=data|get_item:'order'  before=data|get_item:'from' %}
-					<label class=""> <a href="{% url 'order_review' order.id %}">  
+					<label class="order-item" itemdata="{{ order|get_full_content }}"> <a href="{% url 'order_review' order.id %}">  
 						 {{ order }} 
 					</a>  </label>
 					<div class="d-flex mr-auto"> &nbsp;</div>
@@ -54,4 +59,8 @@
 	{% endfor %}
 	</ul>
 </div>
+{% endblock %}
+
+{% block custom_script %}
+	<script language="javascript" src="{% static 'js/order_list_search.js' %}"> </script>
 {% endblock %}

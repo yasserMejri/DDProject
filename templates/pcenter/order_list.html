@@ -5,25 +5,40 @@
 
 {% block content %}
 <div class="col-sm-14 offset-md-1">
+
+	<div id="alert-area">
+		{% if msg %}
+			<div class="alert alert-{{msg_type}} alert-dismissible fade show" role="alert">
+				<button type="button" class="close" data-dismiss="alert" aria-label="Close"> <span aria-hidden="true">×</span> </button>
+				<strong> {{ msg_type|title }} ! </strong> {{ msg }}
+			</div>
+		{% endif %}
+	</div>
+
 	<h3> Order List </h3>
 
 	<ul class="nav nav-tabs" role="tablist">
-		{% for key in orders %}
+		{% for key in keyorder %}
 			<li class="nav-item"> 
 				<a class="nav-link {%if forloop.counter == 1 %} active {% endif %} " data-toggle="tab" href="#id-{{key}}" role="tab" >
 					{{ key|title }}
 				</a> 
 			</li>
 		{% endfor %}
+		<li class="d-flex mr-auto" > &nbsp; </li>
+		<li class="pull-right col-md-5">
+			<input type="text" class="form-control" id="list-search-box" placeholder="Search" />
+			{# <button class="btn btn-link icon-header " type="submit"><span class="fa fa-search"></span></button> #}
+		</li>
 	</ul>
 
 	<div class="tab-content">
-	{% for key in orders %}
+	{% for key in keyorder %}
 		<div class="tab-pane {%if forloop.counter == 1 %} active {% endif %}" id="id-{{key}}" role="tabpanel" >
 			<ul class="order_list col-sm-16 list-group">
 				{% for order in orders|get_item:key %}
 					<li class="list-group-item" > 
-						<label class=""> <a href="{% url 'order_review' order.order.id %}">  
+						<label class="order-item" itemdata="{{ order.order|get_full_content }}" > <a href="{% url 'order_review' order.order.id %}">  
 							 {{ order.order }} 
 						</a>  </label>
 						<div class="d-flex mr-auto"> &nbsp;</div>
@@ -95,9 +110,14 @@
 						'payload': payload, 
 						'csrfmiddlewaretoken': csrf
 					}, function(r) {
-						window.location = window.location;
+						$("#alert-area").html('<div class="alert alert-info alert-dismissible fade show" role="alert"> \
+								<button type="button" class="close" data-dismiss="alert" aria-label="Close"> <span aria-hidden="true">×</span> </button> \
+								<strong> Info ! </strong> Your request has been sent! Please wait for confirmation. \
+							</div>');
+						// window.location = window.location+"?alert=true";
 					} ); 
 			}); 
 		}); 
 	</script>
+	<script language="javascript" src="{% static 'js/order_list_search.js' %}"> </script>
 {% endblock %}

@@ -19,6 +19,21 @@ td > select {
 	width: 100%;
 }
 
+.DD {
+	font-size: 4em;
+	line-height: 1;
+	font-family: fantasy;
+	text-align: center;
+	-webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: #fff;
+    color: transparent;
+}
+
+.D {
+	font-size: 12em;
+	color: #c8d4f9;
+}
+
 .portal input {
 	display: inline-block;
 }
@@ -36,8 +51,8 @@ th.cell-sm {
 	width: 8%;
 }
 
-th.cell-bg {
-
+th.cell-lg {
+	width: 52%;
 }
 
 .full-width {
@@ -144,6 +159,17 @@ img.qr-code {
 .qrcode-wrapper {
 	width: 220px;
 	height: 220px;
-	border: 5px dotted #c8d4f9;
-	background: #000;
+	border: 3px dashed #c8d4f9;
+	background: transparent;
+}
+
+#list-search-box {
+	height: 100%;
+	font-size: 2em;
+}
+
+#qrcode-input {
+	position: absolute;
+	height: inherit;
+	opacity: 0;
 }

@@ -26,8 +26,8 @@ class Service(models.Model):
 		return self.name + " - " + self.itemName + " :  " + self.superservice.name
 
 class CheckList(models.Model):
-	name =models.CharField(max_length = 100)
-	description = models.TextField()
+	document =models.CharField(max_length = 100)
+	# description = models.TextField()
 	quantity = models.IntegerField()
 	service = models.ForeignKey('SubService')
 	unit_price = models.IntegerField()

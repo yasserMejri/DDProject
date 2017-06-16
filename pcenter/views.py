@@ -64,7 +64,7 @@ def confirm(user, oid):
 		duplicate = duplicate + 1
 		pass
 	else:
-		orders['progress'].append(d)
+		orders['progress'].insert(0, d)
 	user.userprofile.orders = json.dumps(orders)
 	user.userprofile.save()
 
@@ -94,7 +94,7 @@ def confirm(user, oid):
 			duplicate = duplicate + 2
 			pass
 		else:
-			orders['complete'].append(d)
+			orders['complete'].insert(0, d)
 		from_user.userprofile.orders = json.dumps(orders)
 		from_user.userprofile.save()
 
@@ -130,7 +130,7 @@ def next(user, oid, nid):
 		duplicate = True
 		pass
 	else:
-		orders['confirm'].append(d)
+		orders['confirm'].insert(0, d)
 	next_user.userprofile.orders = json.dumps(orders)
 	next_user.userprofile.save()
 
@@ -150,23 +150,37 @@ def register_order(request):
 	if request.method == 'POST':
 		oid = request.POST.get('oid')
 		if oid:
+			try:
+				confirm(request.user, oid)
 
-			confirm(request.user, oid)
+				order = d_models.Order.objects.get(pk=int(oid))
+				data = json.loads(order.data)
+				user = request.user
 
-			order = d_models.Order.objects.get(pk=int(oid))
-			data = json.loads(order.data)
-			user = request.user
-
-			return render(request, 'pcenter/order_register.html', {
-				'user': request.user, 
-				'order': order,
-				'data': data, 
-				'countries': widgets.COUNTRY_CHOICES, 
-				'fee_total': fee_total, 
-				'msg' : msg, 
-				'msg_type': msg_type, 
-				'close': True
-				})
+				return render(request, 'pcenter/order_register.html', {
+					'user': request.user, 
+					'order': order,
+					'data': data, 
+					'countries': widgets.COUNTRY_CHOICES, 
+					'fee_total': fee_total, 
+					'msg' : msg, 
+					'msg_type': msg_type, 
+					'close': True
+					})
+			except:
+				order = data = fee_total = msg = msg_type = None
+				msg = 'QR Code Incorrect'
+				msg_type='danger'
+				return render(request, 'pcenter/order_register.html', {
+					'user': request.user, 
+					'order': order,
+					'data': data, 
+					'countries': widgets.COUNTRY_CHOICES, 
+					'fee_total': fee_total, 
+					'msg' : msg, 
+					'msg_type': msg_type, 
+					'close': True
+					})
 
 
 		qrcode_img = request.FILES['qrcode']
@@ -253,23 +267,25 @@ def order_list(request):
 				'next': pm_views.find_next_dest(user.id, order.id)
 				})
 
-	orders_ = d_models.Order.objects.all()
-	orders = []
 	try:
 		cur_pc = find_next_dest(request.user.id, orders_[0].id)
 	except:
 		cur_pc = None
-	for order in orders_:
-		orders.append({
-			'order': order, 
-			'next': pm_views.find_next_dest(user.id, order.id)
-			}) 
+
+	keyorder = ['confirm','progress','complete']
+
+	msg = msg_type = None
+	if request.GET.get('alert'):
+		msg = "Your request has been sent! Please wait for confirmation."
+		msg_type = 'info'
 
 	return render(request, 'pcenter/order_list.html', {
 		'user': request.user, 
 		'orders': u_orders, 
-		'all_orders': orders, 
-		'cur_pc': cur_pc
+		'cur_pc': cur_pc, 
+		'msg': msg,
+		'msg_type': msg_type,
+		'keyorder': keyorder
 		})
 
 def order_next_manage(request, next_id, o_id):

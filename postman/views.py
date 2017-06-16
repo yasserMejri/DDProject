@@ -78,7 +78,12 @@ def find_next_dest(uid, oid):
 		c = c[1]
 	except:
 		c = ''
-	latlng = geocoder.google(data['receiver']['address'] + ' ' + data['receiver']['postcode'] + ' ' + c)
+	latlng = None
+	try:
+		latlng = geocoder.google(data['receiver']['address'] + ' ' + data['receiver']['postcode'] + ' ' + c)
+	except:
+		print 'ERROR: latlng fetch failed!'
+		pass
 	lat = lng = ''
 	try:
 		lat = latlng[0]
@@ -186,7 +191,7 @@ def confirm(user, oid):
 			duplicate = duplicate + 2
 			pass
 		else:
-			orders['complete'].append(d)
+			orders['complete'].insert(0, d)
 		from_user.userprofile.orders = json.dumps(orders)
 		from_user.userprofile.save()
 
@@ -222,7 +227,7 @@ def next(user, oid, nid):
 		duplicate = True
 		pass
 	else:
-		orders['confirm'].append(d)
+		orders['confirm'].insert(0, d)
 	next_user.userprofile.orders = json.dumps(orders)
 	next_user.userprofile.save()
 
@@ -260,17 +265,26 @@ def register_order(request):
 				})
 
 
-		qrcode_img = request.FILES['qrcode']
+		qrcode_img = request.FILES.get('qrcode')
+		o_id = request.POST.get('o_id')
 
 		qr = qrtools.QR()
 		try:
-			qr.decode(qrcode_img)
-			qr_data = json.loads(qr.data)
-
-			order = d_models.Order.objects.get(pk=qr_data['id'])
-			if order.id != int(request.GET.get('order')):
-				raise NameError('No matching')
+			oid = None
+			if qrcode_img:
+				qr.decode(qrcode_img)
+				print qr.data
+				qr_data = json.loads(qr.data)
+				oid = qr_data['id']
+			elif o_id:
+				oid = o_id
+			# print qr_data
+			order = d_models.Order.objects.get(pk=oid)
 			data = json.loads(order.data)
+			print order
+			if order.id != int(request.GET.get('order')):
+				order = None
+				raise NameError('No matching')
 			fee_total = 0;
 			for item in data['documents']:
 				fee_total = fee_total + item['fee']
@@ -343,23 +357,25 @@ def order_list(request):
 				'next': find_next_dest(user.id, order.id)
 				})
 
-	orders_ = d_models.Order.objects.all()
-	orders = []
+	keyorder = ['confirm','progress','complete']
+
 	try:
-		cur_pc = find_next_dest(request.user.id, orders_[0].id)
+		cur_pc = find_next_dest(request.user.id, 1)
 	except:
 		cur_pc = None
-	for order in orders_:
-		orders.append({
-			'order': order, 
-			'next': find_next_dest(user.id, order.id)
-			}) 
+
+	msg = msg_type = None
+	if request.GET.get('alert'):
+		msg = "Your request has been sent! Please wait for confirmation."
+		msg_type = 'info'
 
 	return render(request, 'postman/order_list.html', {
 		'user': request.user, 
 		'orders': u_orders, 
-		'all_orders': orders, 
-		'cur_pc': cur_pc
+		'cur_pc': cur_pc, 
+		'msg': msg,
+		'msg_type': msg_type,
+		'keyorder': keyorder
 		})
 
 def order_next_manage(request, next_id, o_id):

@@ -24,7 +24,6 @@ def index(request):
 		'user': request.user, 
 		})
 
-
 def d_login(request):
 	error = ''
 	if request.method == 'POST':
@@ -134,13 +133,13 @@ def new_order(request):
 			orders = nxt_postman.userprofile.orders
 
 		try:
-			orders['confirm'].append({
+			orders['confirm'].insert(0, {
 				'order': str(order.id), 
 				'from': request.user.id
 				})
 		except:
 			orders['confirm'] = []
-			orders['confirm'].append({
+			orders['confirm'].insert(0, {
 				'order': str(order.id), 
 				'from': request.user.id
 				})
@@ -170,8 +169,8 @@ def new_order(request):
 				for checklist in checklists:
 					service_fields[superservice.id]['services'][service.id]['subservices'][subservice.id]['checklist'][checklist.id] = {}
 					service_fields[superservice.id]['services'][service.id]['subservices'][subservice.id]['checklist'][checklist.id]['no'] = checklist.id
-					service_fields[superservice.id]['services'][service.id]['subservices'][subservice.id]['checklist'][checklist.id]['name'] = checklist.name
-					service_fields[superservice.id]['services'][service.id]['subservices'][subservice.id]['checklist'][checklist.id]['description'] = checklist.description
+					# service_fields[superservice.id]['services'][service.id]['subservices'][subservice.id]['checklist'][checklist.id]['name'] = checklist.name
+					service_fields[superservice.id]['services'][service.id]['subservices'][subservice.id]['checklist'][checklist.id]['document'] = checklist.document
 					service_fields[superservice.id]['services'][service.id]['subservices'][subservice.id]['checklist'][checklist.id]['quantity'] = checklist.quantity
 					service_fields[superservice.id]['services'][service.id]['subservices'][subservice.id]['checklist'][checklist.id]['unit_price'] = checklist.unit_price
 					service_fields[superservice.id]['services'][service.id]['subservices'][subservice.id]['checklist'][checklist.id]['fee'] = checklist.fee
@@ -207,7 +206,9 @@ def order_review(request, pk):
 @login_required
 def order_list(request):
 
-	orders = models.Order.objects.filter(user=request.user)
+	orders = models.Order.objects.filter(user=request.user).order_by('-creationdate')
+
+	keys = ['sent','confirm','received','complete']
 
 	try:
 		u_orders = json.loads(request.user.userprofile.orders)
@@ -228,10 +229,13 @@ def order_list(request):
 			'from': None
 			})
 
+	keyorder = ['sent','confirm','received','complete']
+
 	return render(request, 'order_list.html', {
 		'user': request.user,
 		'orders': [], 
-		'u_orders': u_orders
+		'u_orders': u_orders,
+		'keyorder': keyorder
 		})
 
 @login_required
@@ -257,13 +261,13 @@ def order_confirm(request, oid, uid):
 			orders = order.user.userprofile.orders
 
 		try:
-			orders['complete'].append({
+			orders['complete'].insert(0, {
 				'order': order.id,
 				'from': None
 				})
 		except:
 			orders['complete'] = []
-			orders['complete'].append({
+			orders['complete'].insert(0, {
 				'order': order.id,
 				'from': None
 				})
@@ -280,10 +284,10 @@ def order_confirm(request, oid, uid):
 			if order['order'] == oid:
 				orders['confirm'].remove(order)
 				try:
-					orders['received'].append(order)
+					orders['received'].insert(0, order)
 				except:
 					orders['received'] = []
-					orders['received'].append(order)
+					orders['received'].insert(0, order)
 				break
 
 		user.userprofile.orders = json.dumps(orders)
@@ -301,10 +305,10 @@ def order_confirm(request, oid, uid):
 			if order['order'] == oid:
 				orders['progress'].remove(order)
 				try:
-					orders['complete'].append(order)
+					orders['complete'].insert(0, order)
 				except:
 					orders['complete'] = []
-					orders['complete'].append(order)
+					orders['complete'].insert(0, order)
 				break
 		before.userprofile.orders = json.dumps(orders)
 		before.userprofile.save()

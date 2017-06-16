@@ -4,9 +4,9 @@ $(document).ready(function() {
 	var cur_sp_idx, cur_sv_idx, cur_sb_idx; // Current SuperService, Service, SubService indexes
 	var docs = [];
 	var doc_fields = [
-		{'name': 'No', 'type': 'text', 'class':'cell-sm', 'v_name':'no'}, 
-		{'name': 'Name', 'type': 'text', 'class':'cell-sm', 'v_name': 'name'}, 
-		{'name': 'Description', 'type': 'text', 'class':'cell-lg', 'v_name': 'description'}, 
+		{'name': 'No', 'type': 'number', 'class':'cell-sm', 'v_name':'no'}, 
+		// {'name': 'Name', 'type': 'text', 'class':'cell-sm', 'v_name': 'name'}, 
+		{'name': 'Document', 'type': 'text', 'class':'cell-lg', 'v_name': 'document'}, 
 		{'name': 'Quantity', 'type': 'number', 'class':'cell-sm', 'v_name': 'quantity'}, 
 		{'name': 'Unit Price', 'type': 'number', 'class':'cell-sm', 'v_name': 'unit_price'}, 
 		{'name': 'Total', 'type': 'hidden', 'class':'cell-sm', 'v_name': 'total'}, 
@@ -110,7 +110,7 @@ $(document).ready(function() {
 				}, 500) ;
 		}); 
 
-		$(".value-data").keydown(function() {
+		$(".value-data").keyup(function() {
 			var field = $(this).attr('column');
 			var keyword = $(this).val();
 			var all = false;
@@ -207,24 +207,36 @@ $(document).ready(function() {
 		}
 		$("#documents_header").append('<th class="cell-sm">-</th>');
 		$("#documents_body").html('');
+		var doc_count = 1;
 		for(d_idx in docs) {
 			doc = docs[d_idx];
 			var elem = '<tr>';
 			for(idx in doc_fields) {
 				field = doc_fields[idx];
-				elem = elem + '<td class="'+field['class']+'"  title="' + doc[field['v_name']] + '" >' + doc[field['v_name']] + '</td>';
+				if(field['v_name'] == 'no') {
+					elem = elem + '<td class="'+field['class']+'"  title="' + doc[field['v_name']] + '" >' + doc_count + '</td>';
+				} else if(['quantity','unit_price'].indexOf(field['v_name']) == -1) {
+					elem = elem + '<td class="'+field['class']+'"  title="' + doc[field['v_name']] + '" >' + doc[field['v_name']] + '</td>';
+				} else {
+					elem = elem + '<td class="'+field['class']+'"  title="' + doc[field['v_name']] + '" > <input type="number" class="form-control fieldvalue" itemrow="'+d_idx+'" itemcol="'+field['v_name']+'" value="' + doc[field['v_name']] + '" /> </td>';
+				}
 			}
-			if(doc['delete'])
+			// if(doc['delete'])
 				elem = elem + '<td > <span row="'+d_idx+'" class="fa fa-trash-o remove-row"> </span> </td>';
-			else 
-				elem = elem + '<td > <span row="'+d_idx+'" class="fa fa-ban"> </span> </td>';
+			// else 
+				// elem = elem + '<td > <span row="'+d_idx+'" class="fa fa-ban"> </span> </td>';
 			elem = elem + '</tr>';
 			$("#documents_body").append(elem);
+			doc_count ++;
 		}
 		var elem = '<tr id="new_doc">';
 		for(idx in doc_fields) {
 			field = doc_fields[idx];
-			elem = elem + '<td class="'+field['class']+'"> <input class="form-control" type="'+field['type']+'" itemprop = "'+field['v_name']+'" /></td>';
+			if(field['v_name'] == 'no') {
+				elem = elem + '<td class="'+field['class']+'"> <input class="form-control" type="'+field['type']+'" itemprop = "'+field['v_name']+'" value="'+doc_count+'" min="'+doc_count+'" /></td>';
+			} else {
+				elem = elem + '<td class="'+field['class']+'"> <input class="form-control" type="'+field['type']+'" itemprop = "'+field['v_name']+'" /></td>';
+			}
 		}
 		elem = elem + '<td > -</td>';
 		elem = elem + '</tr>';
@@ -253,6 +265,14 @@ $(document).ready(function() {
 		$("#documents_body .remove-row").click(function() {
 			row = parseInt($(this).attr('row'));
 			docs.splice(row, 1);
+			refresh_documents();
+		}); 
+
+		$("input.fieldvalue").change(function() {
+			row = parseInt($(this).attr('itemrow'));
+			v_name = $(this).attr('itemcol');
+			docs[row][v_name] = $(this).val();
+			docs[row]['total'] = docs[row]['quantity'] * docs[row]['unit_price'];
 			refresh_documents();
 		}); 
 

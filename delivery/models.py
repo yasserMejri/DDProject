@@ -316,15 +316,16 @@ class Order(models.Model):
     def generate_qrcode(self):
         qr = qrcode.QRCode(
             version=1,
-            error_correction=qrcode.constants.ERROR_CORRECT_M,
+            error_correction=qrcode.constants.ERROR_CORRECT_L,
             box_size=8,
             border=0,
         )
         content = {}
         content['id'] = self.id
-        content['content'] = self.data
+        # content['content'] = self.data
         content['time'] = unicode(self.creationdate)
-        qr.add_data(json.dumps(content))
+        print unicode(json.dumps(content))
+        qr.add_data(unicode(json.dumps(content)))
         qr.make(fit=True)
 
         img = qr.make_image()
@@ -336,10 +337,21 @@ class Order(models.Model):
         self.qrcode.save(filename, filebuffer)
 
     def __str__(self):
+        data = json.loads(self.data)
+        info = ''
         try:
-            return self.user.userprofile.__str__() + "'s Order  on '" + self.creationdate.strftime("%Y-%m-%d %H:%M:%S") 
+            name = data['service']['service']['itemName']
+            if name != 'Property':
+                raise ValueError('No Property!')
+            info = 'Property - '
+            for key in data['service']['service'][name]:
+                info = info + data['service']['service'][name][key]['value']
         except:
-            return self.user.__str__() + "'s Order  on '" + self.creationdate.strftime("%Y-%m-%d %H:%M:%S") 
+            pass
+        try:
+            return self.user.userprofile.__str__() + "'s Order  on '" + self.creationdate.strftime("%Y-%m-%d %H:%M:%S")  + ' : ' + info
+        except:
+            return self.user.__str__() + "'s Order  on '" + self.creationdate.strftime("%Y-%m-%d %H:%M:%S") +' no profile' + ' : ' + info
 
 class OrderAction(models.Model):
     action_name = models.CharField(max_length = 255)
