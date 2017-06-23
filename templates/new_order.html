@@ -2,13 +2,12 @@
 {% load static %}
 
 {% block content %}
-
 	<form method = "post" id="order-form">
 		{% csrf_token %}
 		<input type="hidden" name="order-data" id="order-data" />
 	</form>
 	<br/>
-	<h3 class=" offset-md-1"> Order Form </h3>
+	<h3 class=" offset-md-1"> New Order </h3> <br/>
 	<ul class="nav nav-tabs  offset-md-1 col-md-15" id="superservices">
 		<li class="active"> <a data-toggle="tab" href="#filing"> Filing </a> </li>
 		<li> <a data-toggle="tab" href="#searches"> Searches </a> </li>
@@ -22,7 +21,7 @@
 		<div class="col-md-6 portal-item offset-md-1">
 			<div class="sender-info col-md-16">
 				<br/>
-				<h4> Sender </h4>
+				<h4 class="card-title text-white"> Sender </h4>
 				<select id="services" class="col-md-15 col-xs-16 required form-control" > 
 					<option> Service </option>
 					<option> Land Forms </option>

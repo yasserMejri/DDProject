@@ -1,9 +1,11 @@
 {% extends "main.html" %}
 {% load static %}
 
+{% block page_title %} &nbsp; {% endblock %}
+
 {% block content %}
 <div class="col-sm-14 offset-md-1">
-	<h3> Order List </h3>
+	<h3> Order List </h3> <br/>
 
 	<ul class="nav nav-tabs" role="tablist">
 		{% for key in keyorder %}
@@ -37,6 +39,12 @@
 								<span class="fa fa-flag-checkered text text-success text-lg"> </span>
 							</a>
 						</label>
+					{% elif key == 'progress' %}
+						<label class="pull-right order_next" itemorder="{{ order.id }}" itemfrom="{{ before.id }}" >
+							<a href="{% url 'order_track' order.id %}">
+								<span class="fa fa-tasks text text-success text-lg"> </span>
+							</a>
+						</label>
 					{% endif %}
 					{% endwith %}
 				</li>
@@ -45,8 +53,6 @@
 		</div>
 	{% endfor %}
 	</div>
-
-	<hr />
 
 	<ul class="order_list col-sm-16 list-group">
 	{% for order in orders %}

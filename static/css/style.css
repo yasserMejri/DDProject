@@ -69,7 +69,7 @@ th.cell-lg {
 }
 
 .top-gap {
-	margin-top: 50px;
+	margin-top: 30px;
 }
 
 .header .opaq-background {
@@ -106,6 +106,10 @@ th.cell-lg {
 .header > .pull-right {
 	left: auto;
 	right: 20px;
+}
+
+.order-form .form-control {
+	float: left;
 }
 
 .documents table {

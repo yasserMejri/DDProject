@@ -4,6 +4,9 @@
 
 {% load extra %}
 
+
+{% block page_title %} &nbsp; {% endblock %}
+
 {% block content %}
 	<div class="col-md-14 offset-md-1 portal row">
 	<h2 class="col-md-16" > Order #{{order.id}} by {{ order.user.first_name }} {{ order.user.last_name }} </h2>

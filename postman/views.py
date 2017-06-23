@@ -123,7 +123,7 @@ def confirm(user, oid):
 		TODO:  current : confirm -> progress
 		TODO:  before  : progress -> complete
 	"""
-	order = d_models.Order.objects.get(pk=int(oid))
+	c_order = d_models.Order.objects.get(pk=int(oid))
 
 	orders = {}
 	try:
@@ -194,6 +194,28 @@ def confirm(user, oid):
 			orders['complete'].insert(0, d)
 		from_user.userprofile.orders = json.dumps(orders)
 		from_user.userprofile.save()
+
+	else:
+
+		try:
+			test = orders['progress']
+		except:
+			orders['progress'] = []
+
+		orders['progress'].insert(0, {
+			'from': None, 
+			'order': oid
+			})
+		from_user.userprofile.orders = json.dumps(orders)
+		from_user.userprofile.save()
+
+	track = d_models.Track(
+		order = c_order, 
+		from_user = from_user, 
+		to_user = user, 
+		description = "Order Confirmed by Postman"
+		)
+	track.save()
 
 	return True, duplicate
 

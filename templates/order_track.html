@@ -1,0 +1,40 @@
+{% extends "main.html" %}
+
+{% load static %}
+
+{% block content %}
+
+	<div class="col-ms-16">
+		<div class="card">
+			<div class="card-header">
+				<h3 class=""> Order Track: <a href="{% url 'order_review' order.id %}"> <strong>{{ order }}</strong> </a> </h3>
+			</div>
+			<div class="card-block">
+				<ul class="timeline_large">
+					{% for track in tracks %}
+						<li class="col-md-16 {% if forloop.counter|divisibleby:2 %} timeline-inverted {% endif %}">
+							<div class="timeline-badge">
+								<i class="fa fa-check"></i> 
+							</div> 
+							<div class="timeline-panel">
+								<div class="timeline-heading">
+									<h5 class="timeline-title">
+										<label> {{ track.time }} </label>
+									</h5>
+								</div>
+								<div class="timeline-body">
+									<div class="offset-md-1">
+										<label> <em>" {{ track.description }} "</em> </label> <br/>
+										<span>To:&nbsp;&nbsp; </span> {{ track.to_user }} <br/>
+										<span>From:&nbsp;&nbsp; </span> {{ track.from_user }} <br/>
+									</div>
+								</div>
+							</div>
+						</li>
+					{% endfor %}
+				</ul>
+			</div>
+		</div>
+	</div>
+
+{% endblock %}

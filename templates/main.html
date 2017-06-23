@@ -11,11 +11,6 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 
-	{# Load CSS and JavaScript #}
-	{# {% bootstrap_css %} #}
-	{# {% bootstrap_javascript %} #}
-
-	{# Display django.contrib.messages as Bootstrap alerts #}
 	{% bootstrap_messages %}
 
 	<link rel="stylesheet" href="{% static 'vendor/font-awesome-4.7.0/css/font-awesome.min.css' %}" type="text/css">
@@ -44,18 +39,18 @@
 				<ul class="navbar-nav">
 					{% if user.id %}
 						{% if user.userprofile.user_type.name == 'Client' %}
-							<li class="nav-item"> <a class="btn btn-md btn-secondary mr-2" href="{% url 'new_order' %}" > <span> New Order </span> </a> </li>
-							<li class="nav-item"> <a class="btn btn-md btn-secondary mr-2" href="{% url 'order_list' %}" > <span> Order List </span> </a> </li>
+							<li class="nav-item"> <a class="btn btn-md btn-primary mr-2" href="{% url 'new_order' %}" > <span> New Order </span> </a> </li>
+							<li class="nav-item"> <a class="btn btn-md btn-primary mr-2" href="{% url 'order_list' %}" > <span> Order List </span> </a> </li>
 						{% elif user.userprofile.user_type.name == 'Postman' %}
-							<li class="nav-item"> <a class = "btn btn-md btn-secondary mr-2" href="{% url 'postman_order_list' %}" > <span> Orders </span> </a> </li>
+							<li class="nav-item"> <a class = "btn btn-md btn-primary mr-2" href="{% url 'postman_order_list' %}" > <span> Orders </span> </a> </li>
 						{% elif user.userprofile.user_type.name == 'Process Center' %}
-							<li class="nav-item"> <a class = "btn btn-md btn-secondary mr-2" href="{% url 'pcenter_order_list' %}" > <span> Orders </span> </a> </li>
+							<li class="nav-item"> <a class = "btn btn-md btn-primary mr-2" href="{% url 'pcenter_order_list' %}" > <span> Orders </span> </a> </li>
 						{% endif %}
 						<li class="nav-item"> <a class="btn btn-md btn-link mr-2"> <span  class="fa fa-user"> </span> {{ user.userprofile }} </a> </li>
-						<li class="nav-item"> <label> <a class="btn btn-md btn-danger mr-2" href="{% url 'logout' %}"> <span class="fa fa-log-out"> </span> Logout </a> </label> </li>
+						<li class="nav-item"> <label> <a class="btn btn-md btn-danger mr-2" href="{% url 'logout' %}"> <span class="fa fa-sign-out"> </span> Logout </a> </label> </li>
 					{% else %}
 						<li class="nav-item"> <label > <a class="btn btn-md btn-primary mr-2" href="{% url 'register' %}"> <span class="fa fa-user"> </span> Signup </a> </label> </li>
-						<li class="nav-item"> <label > <a class="btn btn-md btn-outline-primary mr-2" href="{% url 'login' %}"> <span class="fa fa-log-in"> </span> Login </a> </label> </li>
+						<li class="nav-item"> <label > <a class="btn btn-md btn-outline-primary mr-2" href="{% url 'login' %}"> <span class="fa fa-sign-in"> </span> Login </a> </label> </li>
 					{% endif %}
 					</ul>
 			</div>
@@ -66,11 +61,20 @@
 	<h1 class="top-gap"> </h1>
 
 	<div class="content wrapper-content">
-		{% block content %}
-			<div class="DD">
-				<label class="D"> D </label>ENNING <label class="D"> D </label>ELIVERY
+	<div class="col-md-16">
+		<div class="card">
+			<div class="card-block">
+				<h3 class="card-title text-white" > 
+					{% block page_title %} {% endblock %}
+				</h3>
+				{% block content %}
+					<div class="DD">
+						<label class="D"> D </label>ENNING <label class="D"> D </label>ELIVERY
+					</div>
+				{% endblock %}
 			</div>
-		{% endblock %}
+		</div>
+	</div>
 
 		<h1 class="top-gap"> &nbsp; </h1>
 

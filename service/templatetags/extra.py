@@ -17,8 +17,7 @@ def get_value_list(value):
 	key = ''
 	if isinstance(value, dict):
 		for key_item in value.keys():
-			print key_item
-			print value[key_item]
+
 			if isinstance(value[key_item], dict):
 				k, d = get_value_list(value[key_item])
 				key = key + '?' + k
@@ -51,11 +50,11 @@ def get_value_list(value):
 @register.filter
 def get_full_content(order):
 	try:
-		print order.data
+
 		all_data = json.loads(order.data)
 		key, data = get_value_list(all_data)
 
 		return order.__str__()+'?'+data
 	except:
-		# print order.data
+
 		return 'Error'

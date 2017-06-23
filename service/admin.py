@@ -43,8 +43,9 @@ class SupportedLocationAdmin(admin.ModelAdmin):
 
 admin.site.register(models.SuperService)
 
-admin.site.register(models.SupportedLocation, SupportedLocationAdmin)
-
 admin.site.register(models.Service, ServiceAdmin)
 
 admin.site.register(models.SubService, SubServiceAdmin)
+
+admin.site.register(models.SupportedLocation, SupportedLocationAdmin)
+

@@ -366,17 +366,12 @@ class TrackStatus(models.Model):
         return self.status_name
 
 class Track(models.Model):
+
     time = models.DateTimeField(auto_now=True)
-    ordernum = models.IntegerField()
-    address1 = models.CharField(max_length=255)
-    location1 = models.CharField(max_length=255)
-    location2 = models.CharField(max_length=255)
     from_user = models.ForeignKey(User, related_name='from_user', blank=True, null=True)
     to_user = models.ForeignKey(User, related_name='to_user', blank=True, null=True)
-    next_user = models.ForeignKey(User, related_name="next_user", blank=True, null=True)
+    description = models.CharField(max_length=255)
     order = models.ForeignKey(Order)
-    status = models.ForeignKey(TrackStatus)
-    action = models.ForeignKey(OrderAction)
 
     def __str__(self):
         return self.time.strftime("%Y-%m-%d %H:%M:%S") + self.order.__str__()

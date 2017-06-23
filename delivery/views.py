@@ -146,6 +146,14 @@ def new_order(request):
 		nxt_postman.userprofile.orders = json.dumps(orders)
 		nxt_postman.userprofile.save()
 
+		track = models.Track(
+			from_user = request.user, 
+			to_user = nxt_postman, 
+			order = order, 
+			description = "Order Created"
+			)
+		track.save()
+
 		return HttpResponseRedirect(reverse('order_review', kwargs={'pk':order.id}))
 
 	for superservice in superservices:
@@ -208,7 +216,7 @@ def order_list(request):
 
 	orders = models.Order.objects.filter(user=request.user).order_by('-creationdate')
 
-	keys = ['sent','confirm','received','complete']
+	keys = ['sent','confirm', 'progress', 'received','complete']
 
 	try:
 		u_orders = json.loads(request.user.userprofile.orders)
@@ -219,7 +227,7 @@ def order_list(request):
 		idx = 0
 		for val in u_orders[key]:
 			u_orders[key][idx]['order'] = models.Order.objects.get(pk=int(val['order']))
-			if key != 'complete':
+			if key != 'complete' and key != 'progress':
 				u_orders[key][idx]['from'] = User.objects.get(pk=int(val['from']))
 			idx = idx + 1
 	u_orders['sent'] = []
@@ -229,7 +237,7 @@ def order_list(request):
 			'from': None
 			})
 
-	keyorder = ['sent','confirm','received','complete']
+	keyorder = ['sent','confirm', 'progress', 'received','complete']
 
 	return render(request, 'order_list.html', {
 		'user': request.user,
@@ -271,6 +279,12 @@ def order_confirm(request, oid, uid):
 				'order': order.id,
 				'from': None
 				})
+
+		for order in orders['progress']:
+			if order['order'] == oid:
+				order['progress'].remove(order)
+				break
+
 		order.user.userprofile.orders = json.dumps(orders)
 		order.user.userprofile.save()
 
@@ -325,3 +339,13 @@ def order_confirm(request, oid, uid):
 		'from': before
 		})
 
+def order_track(request, oid):
+
+	order = models.Order.objects.get(pk=oid)
+	tracks = models.Track.objects.filter(order=order).order_by('time')
+
+	return render(request, 'order_track.html', {
+		'user': request.user, 
+		'order': order, 
+		'tracks': tracks
+		})

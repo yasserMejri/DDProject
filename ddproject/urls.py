@@ -30,6 +30,7 @@ urlpatterns = [
     url(r'^order_view/(?P<pk>\d{0,50})/$', d_views.order_review, name="order_review"), 
     url(r'^order_list/$', d_views.order_list, name="order_list"), 
     url(r'^order_confirm/(?P<oid>\d{0,50})/(?P<uid>\d{0,50})/$', d_views.order_confirm, name="order_confirm"), 
+    url(r'^order_track/(?P<oid>\d{0,50})/$', d_views.order_track, name="order_track"), 
     url(r'^service_autocomplete/$', s_views.service_autocomplete, name="service_autocomplete"), 
 
     url(r'^postman/add_order/$', pm_views.register_order, name="postman_register_order"), 
